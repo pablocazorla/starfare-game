@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/starfare.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STARFARE</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #222;
+        height: 100dvh;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+      canvas {
+        /* background: linear-gradient(0deg, #002a36 0%, #00101c 46%); */
+
+        background: linear-gradient(
+          0deg,
+          #002a36,
+          #00101c,
+          #000e36,
+          #0a001c,
+          #1e0036,
+          #1c0016,
+          #361600,
+          #141c00,
+          #361600,
+          #141c00,
+          #00361b,
+          #00181c,
+          #002a36
+        );
+        background-size: 100% 600%;
+        display: block;
+        animation: bgsky 600s linear infinite both;
+      }
+
+      @keyframes bgsky {
+        0% {
+          background-position: 0% 600%;
+        }
+
+        100% {
+          background-position: 0% 0%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starfare-canvas" width="700" height="800"></canvas>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
