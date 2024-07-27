@@ -1,7 +1,8 @@
 import Game from "./game.js";
 
+const container = document.getElementById("starfare-container");
 const canvas = document.getElementById("starfare-canvas");
-const game = new Game(canvas);
+const game = new Game(container, canvas);
 
 let previousTime = 0;
 

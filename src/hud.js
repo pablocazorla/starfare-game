@@ -3,8 +3,12 @@ class Hud {
     this.game = game;
     this.paddingTop = 10;
     this.paddingX = 10;
+    this.showing = false;
   }
   draw() {
+    if (!this.showing) {
+      return;
+    }
     const { ctx } = this.game;
     ctx.save();
     ctx.fillStyle = "#fff";
@@ -67,6 +71,12 @@ class Hud {
       this.game.width - this.paddingX,
       this.paddingTop
     );
+  }
+  show() {
+    this.showing = true;
+  }
+  hide() {
+    this.showing = false;
   }
 }
 

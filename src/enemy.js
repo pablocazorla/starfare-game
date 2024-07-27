@@ -12,8 +12,16 @@ class Enemy extends Body {
     //
     this.speedX = Math.random() * 2 - 3;
     this.speedY = Math.random() * 1 + 1;
+
+    this.animationDuration = 2000;
+    this.animationTimer = 0;
   }
-  update(timeFrame) {
+  update(timeframe) {
+    this.animationTimer += timeframe;
+    if (this.animationTimer >= this.animationDuration) {
+      this.animationTimer = 0;
+    }
+
     this.game.projectiles.forEach((projectile) => {
       if (this.detectCollision(projectile)) {
         this.lifes--;
@@ -27,15 +35,15 @@ class Enemy extends Body {
     }
 
     // Move
-    this.x += this.speedX;
-    this.y += this.speedY;
-
     if (
       this.x < 0.5 * this.width ||
       this.x > this.game.width - 0.5 * this.width
     ) {
       this.speedX = -this.speedX;
     }
+
+    this.x += this.speedX;
+    this.y += this.speedY;
 
     if (this.y > this.game.height + this.height) {
       this.markedToDelete = true;
@@ -45,12 +53,15 @@ class Enemy extends Body {
     const { ctx } = this.game;
     ctx.save();
 
+    const frame =
+      -4 * Math.abs((Math.round(this.animationTimer / 125) % 8) - 4);
+
     ctx.fillStyle = "rgba(85, 0, 0, 1)";
     ctx.beginPath();
     ctx.ellipse(
       this.x,
       this.y,
-      this.width * 0.46,
+      this.width * 0.46 + 0.6 * frame,
       this.height * 0.2,
       0,
       0,
@@ -64,8 +75,8 @@ class Enemy extends Body {
       this.y,
       0,
       this.x,
-      this.y,
-      this.width
+      this.y + 0.1 * frame,
+      this.width + frame
     );
     gradient.addColorStop(0, "rgba(255, 0, 0, 0)");
     gradient.addColorStop(0.4, "rgba(255, 0, 0, 0)");
@@ -76,7 +87,7 @@ class Enemy extends Body {
     ctx.ellipse(
       this.x,
       this.y,
-      this.width / 2,
+      (this.width + frame) / 2,
       this.height * 0.6,
       0,
       0,

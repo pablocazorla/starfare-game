@@ -38,6 +38,7 @@
         background-size: 100% 600%;
         display: block;
         animation: bgsky 600s linear infinite both;
+        color: hsl(29, 100%, 42%);
       }
 
       @keyframes bgsky {
@@ -49,10 +50,52 @@
           background-position: 0% 0%;
         }
       }
+
+      #starfare-container.shake {
+        --amplitude: 10px;
+        animation: shake 400ms ease 1;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translate(0, 0);
+        }
+
+        12.5% {
+          transform: translate(
+            calc(var(--amplitude) * 1),
+            calc(var(--amplitude) * 1)
+          );
+        }
+        37.5% {
+          transform: translate(
+            calc(var(--amplitude) * -0.8),
+            calc(var(--amplitude) * -0.8)
+          );
+        }
+        62.5% {
+          transform: translate(
+            calc(var(--amplitude) * 0.5),
+            calc(var(--amplitude) * 0.5)
+          );
+        }
+        87.5% {
+          transform: translate(
+            calc(var(--amplitude) * -0.2),
+            calc(var(--amplitude) * -0.2)
+          );
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
     </style>
   </head>
   <body>
-    <canvas id="starfare-canvas" width="700" height="800"></canvas>
+    <div id="starfare-container">
+      <canvas id="starfare-canvas" width="700" height="800"></canvas>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
