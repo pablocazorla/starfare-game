@@ -249,6 +249,7 @@ class Ship extends Body {
         );
         this.game.shake();
         this.damaged = true;
+        this.overPowered = false;
         this.lifes--;
       }
     });
