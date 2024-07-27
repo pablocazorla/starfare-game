@@ -28,7 +28,7 @@ class Enemy extends Body {
         projectile.markedToDelete = true;
       }
     });
-    if (!this.lifes) {
+    if (this.lifes <= 0) {
       this.game.score += this.value;
       this.markedToDelete = true;
       this.game.explosions.push(new Explosion(this.x, this.y, this.game, 100));

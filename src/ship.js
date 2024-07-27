@@ -32,6 +32,10 @@ class Ship extends Body {
     this.damaged = false;
     this.damageInterval = 1000;
     this.damageTimer = 0;
+    //
+    this.overPowered = false;
+    this.overPoweredTimer = 0;
+    this.overPoweredDuration = 10000;
   }
   update(timeFrame) {
     if (!this.game.started) {
@@ -40,7 +44,9 @@ class Ship extends Body {
     this.move();
     this.shoot(timeFrame);
     this.detectHitEnemies();
-    this.setDamageAnimated(timeFrame);
+    this.damageAnimated(timeFrame);
+    this.onOverPowered(timeFrame);
+    this.detectHitOverpowers();
   }
   draw() {
     if (!this.lifes) {
@@ -121,6 +127,40 @@ class Ship extends Body {
     ctx.closePath();
     ctx.fill();
 
+    // overPowered
+    if (this.overPowered) {
+      const overPoweredSpanX = this.width * 0.2;
+      ctx.fillStyle = `hsl(${colorTone * 180}, 100%, ${60 + 9 * incline}%)`;
+      //
+      ctx.beginPath();
+      ctx.moveTo(this.x - wingSpan, this.y - this.height * 0.4);
+      ctx.lineTo(
+        this.x - wingSpan + overPoweredSpanX,
+        this.y + this.height * 0.2
+      );
+      ctx.lineTo(this.x - wingSpan, this.y + this.height * 0.4);
+      ctx.lineTo(
+        this.x - wingSpan - overPoweredSpanX,
+        this.y + this.height * 0.2
+      );
+      ctx.closePath();
+      ctx.fill();
+      //
+      ctx.beginPath();
+      ctx.moveTo(this.x + wingSpan, this.y - this.height * 0.4);
+      ctx.lineTo(
+        this.x + wingSpan + overPoweredSpanX,
+        this.y + this.height * 0.2
+      );
+      ctx.lineTo(this.x + wingSpan, this.y + this.height * 0.4);
+      ctx.lineTo(
+        this.x + wingSpan - overPoweredSpanX,
+        this.y + this.height * 0.2
+      );
+      ctx.closePath();
+      ctx.fill();
+    }
+
     // end
 
     ctx.restore();
@@ -169,6 +209,22 @@ class Ship extends Body {
       this.game.input.keys[" "]
     ) {
       this.game.projectiles.push(new Projectile(this.x, this.y, this.game));
+      if (this.overPowered) {
+        this.game.projectiles.push(
+          new Projectile(
+            this.x - this.wingSpan,
+            this.y + this.height * 0.2,
+            this.game
+          )
+        );
+        this.game.projectiles.push(
+          new Projectile(
+            this.x + this.wingSpan,
+            this.y + this.height * 0.2,
+            this.game
+          )
+        );
+      }
       this.projectileCharge--;
       this.shootWait = 0;
     }
@@ -189,7 +245,7 @@ class Ship extends Body {
       if (this.detectCollision(enemy)) {
         enemy.markedToDelete = true;
         this.game.explosions.push(
-          new Explosion(enemy.x, enemy.y, this.game, 100)
+          new Explosion(enemy.x, enemy.y, this.game, 100, 20)
         );
         this.game.shake();
         this.damaged = true;
@@ -200,7 +256,14 @@ class Ship extends Body {
       this.game.endGame();
     }
   }
-  setDamageAnimated(timeFrame) {
+  detectHitOverpowers() {
+    this.game.overpowers.forEach((overpower) => {
+      if (this.detectCollision(overpower)) {
+        this.setOverPowered(overpower);
+      }
+    });
+  }
+  damageAnimated(timeFrame) {
     if (this.damaged) {
       this.damageTimer += timeFrame;
       if (this.damageTimer >= this.damageInterval) {
@@ -218,6 +281,23 @@ class Ship extends Body {
     this.shootWait = this.shootInterval;
     this.damaged = false;
     this.damageTimer = 0;
+    this.overPowered = false;
+  }
+  setOverPowered(overpower) {
+    if (!this.overPowered) {
+      overpower.markedToDelete = true;
+      this.overPowered = true;
+      this.overPoweredTimer = 0;
+      this.projectileCharge = this.maxProjectileCharge;
+    }
+  }
+  onOverPowered(timeFrame) {
+    if (this.overPowered) {
+      this.overPoweredTimer += timeFrame;
+      if (this.overPoweredTimer >= this.overPoweredDuration) {
+        this.overPowered = false;
+      }
+    }
   }
 }
 

@@ -1,11 +1,11 @@
 const gravityY = 1;
 
 class Particle {
-  constructor(x, y, game) {
+  constructor(x, y, color) {
     this.x = x;
     this.y = y;
     this.radius = Math.random() * 14 + 3;
-    this.game = game;
+    this.color = color;
     this.duration = Math.random() * 1600 + 300;
     this.bornTime = Math.random() * 400;
     this.time = this.duration;
@@ -34,7 +34,7 @@ class Particle {
     if (this.bornTime <= 0) {
       ctx.save();
       const age = Math.max(0, this.time / this.duration);
-      const color = 60 * age;
+      const color = this.color * age;
       const light = 22 * age + 20;
       //ctx.globalAlpha = age;
       const dr = age;
@@ -57,7 +57,7 @@ class Particle {
 }
 
 class Explosion {
-  constructor(x, y, game, size) {
+  constructor(x, y, game, size, color) {
     this.x = x;
     this.y = y;
     this.game = game;
@@ -66,12 +66,13 @@ class Explosion {
     this.radiusSpeed = this.radiusInitialSpeed;
     this.radiusAcceleration = 0.98;
     const particleCount = size || 100;
+    const particleColor = color || 60;
 
     this.markedToDelete = false;
 
     this.particles = [];
     for (let i = 0; i < particleCount; i++) {
-      this.particles.push(new Particle(x, y, game));
+      this.particles.push(new Particle(x, y, particleColor));
     }
   }
   update(timeFrame) {

@@ -6,6 +6,7 @@ import Enemy from "./enemy.js";
 import ScreenStart from "./screenStart.js";
 import ScreenPause from "./screenPause.js";
 import ScreenEnd from "./screenEnd.js";
+import Overpower from "./overpower.js";
 
 class Game {
   constructor(container, canvas) {
@@ -40,6 +41,8 @@ class Game {
     this.enemies = [];
     this.enemiesInterval = null;
     this.explosions = [];
+    this.overpowers = [];
+    this.overpowersInterval = null;
     //
     this.container.addEventListener("animationend", () => {
       this.container.classList.remove("shake");
@@ -61,6 +64,12 @@ class Game {
         (projectile) => !projectile.markedToDelete
       );
       this.projectiles.forEach((projectile) => projectile.update());
+
+      //
+      this.overpowers = this.overpowers.filter(
+        (overpower) => !overpower.markedToDelete
+      );
+      this.overpowers.forEach((overpower) => overpower.update(timeFrame));
       //
       this.enemies = this.enemies.filter((enemy) => !enemy.markedToDelete);
       this.enemies.forEach((enemy) => enemy.update(timeFrame));
@@ -84,6 +93,7 @@ class Game {
     //
     this.stars.forEach((star) => star.draw());
     this.projectiles.forEach((projectile) => projectile.draw());
+    this.overpowers.forEach((overpower) => overpower.draw());
     this.enemies.forEach((enemy) => enemy.draw());
     this.ship.draw();
     //
@@ -104,6 +114,7 @@ class Game {
     this.explosions = [];
     this.ship.reset();
     //
+
     clearInterval(this.enemiesInterval);
     this.enemies = [];
     this.enemiesInterval = setInterval(() => {
@@ -115,6 +126,19 @@ class Game {
         )
       );
     }, 1500);
+
+    //
+    clearInterval(this.overpowersInterval);
+    this.overpowers = [];
+    this.overpowersInterval = setInterval(() => {
+      this.overpowers.push(
+        new Overpower(
+          Math.random() * (this.width - 20) + 10,
+          -0.1 * this.height,
+          this
+        )
+      );
+    }, 20000);
     this.score = 0;
     this.hud.show();
     this.started = true;
