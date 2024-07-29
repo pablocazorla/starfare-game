@@ -11,15 +11,18 @@ class Overpower extends Body {
   }
   update() {
     // Move
-    if (
-      this.x < 0.5 * this.width ||
-      this.x > this.game.width - 0.5 * this.width
-    ) {
-      this.speedX = -this.speedX;
-    }
 
     this.x += this.speedX;
     this.y += this.speedY;
+
+    if (this.x < 0.5 * this.width) {
+      this.speedX *= -1;
+      this.x = 0.5 * this.width;
+    }
+    if (this.x > this.game.width - 0.5 * this.width) {
+      this.speedX *= -1;
+      this.x = this.game.width - 0.5 * this.width;
+    }
 
     if (this.y > this.game.height + this.height) {
       this.markedToDelete = true;

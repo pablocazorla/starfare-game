@@ -8,7 +8,7 @@ class Projectile extends Body {
     this.speedY = 7;
   }
   update() {
-    this.y -= this.speedY * this.game.gameSpeed;
+    this.y -= this.speedY;
     if (this.y < 0) {
       this.markedToDelete = true;
     }

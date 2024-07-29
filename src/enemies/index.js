@@ -1,5 +1,6 @@
 import Body from "../body/index.js";
 import Explosion from "../effects/explosion/index.js";
+import AnimationFrame from "../animationFrame/index.js";
 
 class Enemy extends Body {
   constructor(x, y, game) {
@@ -13,14 +14,12 @@ class Enemy extends Body {
     this.speedX = Math.random() * 2 - 3;
     this.speedY = Math.random() * 1 + 1;
 
-    this.animationDuration = 2000;
-    this.animationTimer = 0;
+    this.animationBreath = new AnimationFrame(8, 1000);
+    this.animationEye = new AnimationFrame(6, 2400);
   }
   update(timeframe) {
-    this.animationTimer += timeframe;
-    if (this.animationTimer >= this.animationDuration) {
-      this.animationTimer = 0;
-    }
+    this.animationBreath.update(timeframe);
+    this.animationEye.update(timeframe);
 
     this.game.projectiles.forEach((projectile) => {
       if (this.detectCollision(projectile)) {
@@ -55,15 +54,15 @@ class Enemy extends Body {
     const { ctx } = this.game;
     ctx.save();
 
-    const frame =
-      -4 * Math.abs((Math.round(this.animationTimer / 125) % 8) - 4);
+    const frameBreath = -4 * Math.abs(this.animationBreath.frame - 4);
 
+    // BODY TUBE
     ctx.fillStyle = "rgba(85, 0, 0, 1)";
     ctx.beginPath();
     ctx.ellipse(
       this.x,
       this.y,
-      this.width * 0.46 + 0.6 * frame,
+      this.width * 0.46 + 0.2 * frameBreath,
       this.height * 0.2,
       0,
       0,
@@ -72,13 +71,14 @@ class Enemy extends Body {
     ctx.closePath();
     ctx.fill();
 
+    // WINGS
     const gradient = ctx.createRadialGradient(
       this.x,
       this.y,
       0,
       this.x,
-      this.y + 0.1 * frame,
-      this.width + frame
+      this.y + 0.1 * frameBreath,
+      this.width + 0.4 * frameBreath
     );
     gradient.addColorStop(0, "rgba(255, 0, 0, 0)");
     gradient.addColorStop(0.4, "rgba(255, 0, 0, 0)");
@@ -89,7 +89,7 @@ class Enemy extends Body {
     ctx.ellipse(
       this.x,
       this.y,
-      (this.width + frame) / 2,
+      (this.width + 0.7 * frameBreath) / 2,
       this.height * 0.6,
       0,
       0,
@@ -98,12 +98,14 @@ class Enemy extends Body {
     ctx.closePath();
     ctx.fill();
 
+    // EYE
+    const frameEye = this.animationEye.frame;
     ctx.fillStyle = "rgba(190, 0, 0, 1)";
     ctx.beginPath();
     ctx.ellipse(
       this.x,
       this.y,
-      this.width * 0.2,
+      this.width * (frameEye === 0 ? 0.24 : 0.2),
       this.width * 0.2,
       0,
       0,
@@ -117,8 +119,8 @@ class Enemy extends Body {
     ctx.ellipse(
       this.x,
       this.y,
-      this.width * 0.05,
-      this.width * 0.18,
+      frameEye === 0 ? this.width * 0.18 : this.width * 0.05,
+      frameEye === 0 ? this.width * 0.01 : this.width * 0.18,
       0,
       0,
       Math.PI * 2

@@ -4,19 +4,15 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/starfare.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>STARFARE</title>
+    <title>Starfarer</title>
 
     <style>
       body {
         margin: 0;
         padding: 0;
-        background-color: #000;
         height: 100dvh;
         width: 100dvw;
         overflow: hidden;
-      }
-      canvas {
-        /* background: linear-gradient(0deg, #002a36 0%, #00101c 46%); */
         cursor: crosshair;
         background: linear-gradient(
           0deg,
@@ -37,7 +33,6 @@
         background-size: 100% 600%;
         display: block;
         animation: bgsky 600s linear infinite both;
-        color: hsl(29, 100%, 42%);
       }
 
       @keyframes bgsky {
@@ -49,8 +44,10 @@
           background-position: 0% 0%;
         }
       }
-
-      #starfarer-container.shake {
+      canvas {
+        display: block;
+      }
+      canvas.shake {
         --amplitude: 15px;
         animation: shake 400ms ease 1;
       }
@@ -91,9 +88,17 @@
     </style>
   </head>
   <body>
-    <div id="starfarer-container">
-      <canvas id="starfarer-canvas" width="700" height="800"></canvas>
-    </div>
+    <canvas id="starfarer-canvas" width="700" height="800"></canvas>
+    <audio src="/assets/sounds/music.mp3" id="music"></audio>
+    <audio src="/assets/sounds/laser.mp3" id="laser"></audio>
+    <audio src="/assets/sounds/laser2.mp3" id="laser2"></audio>
+    <audio src="/assets/sounds/powerUp.mp3" id="powerUp"></audio>
+    <audio src="/assets/sounds/boom.mp3" id="boom"></audio>
+    <audio src="/assets/sounds/boom2.mp3" id="boom2"></audio>
+    <audio
+      src="/assets/sounds/emptyProjectiles.mp3"
+      id="emptyProjectiles"
+    ></audio>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

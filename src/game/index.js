@@ -7,25 +7,42 @@ import ScreenStart from "../ui/screens/start";
 import ScreenPause from "../ui/screens/pause";
 import ScreenEnd from "../ui/screens/end";
 import Overpower from "../upgrades/overpower";
+import Sound from "../sound";
 
 class Game {
-  constructor(container, canvas) {
-    this.container = container;
-    this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
-    this.width = canvas.width;
-    this.height = canvas.height;
-    //
-    const resize = () => {
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
-      this.width = window.innerWidth;
-      this.height = window.innerHeight;
-    };
-    window.addEventListener("resize", resize);
-    resize();
-    //
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext("2d");
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
+
+    // INITIAL EVENT LISTENERS
+    this.initialEventListeners();
+
+    // OBJECTS
+    this.starfield = new Starfield(this);
+    this.ship = new Ship(this);
+    this.projectiles = [];
+    this.enemies = [];
+    this.enemiesBirthInterval = null;
+    this.explosions = [];
+    this.overpowers = [];
+    this.overpowersBirthInterval = null;
+
+    // STATES
+    this.debugMode = false;
+    this.gameSpeed = 1;
+    this.score = 0;
+    this.started = false;
+    this.paused = false;
+
+    // UI
+    this.screenStart = new ScreenStart(this);
+    this.screenPause = new ScreenPause(this);
+    this.screenEnd = new ScreenEnd(this);
     this.hud = new Hud(this);
+
+    // INPUTS
     this.input = new InputHandler([
       "ArrowUp",
       "ArrowDown",
@@ -34,29 +51,10 @@ class Game {
       " ",
       "Enter",
     ]);
-    this.debugMode = false;
-    this.gameSpeed = 1;
-    this.score = 0;
-    //
-    this.starfield = new Starfield(this);
-    //
-    this.ship = new Ship(this);
-    this.projectiles = [];
-    this.enemies = [];
-    this.enemiesInterval = null;
-    this.explosions = [];
-    this.overpowers = [];
-    this.overpowersInterval = null;
-    //
-    this.container.addEventListener("animationend", () => {
-      this.container.classList.remove("shake");
-    });
-    //
-    this.started = false;
-    this.paused = false;
-    this.screenStart = new ScreenStart(this);
-    this.screenPause = new ScreenPause(this);
-    this.screenEnd = new ScreenEnd(this);
+
+    // SOUND
+    this.music = new Sound("music");
+    this.music.setLoopeable().setVolume(0.2).setInitialTime(2.5);
   }
   update(timeFrame) {
     //
@@ -80,9 +78,8 @@ class Game {
         (explosion) => !explosion.markedToDelete
       );
       this.explosions.forEach((explosion) => explosion.update(timeFrame));
-
-      this.ship.update(timeFrame);
     }
+    this.ship.update(timeFrame);
     //
     this.screenPause.update(timeFrame);
     this.screenStart.update(timeFrame);
@@ -108,7 +105,7 @@ class Game {
     this.screenEnd.draw();
   }
   shake() {
-    this.container.classList.add("shake");
+    this.canvas.classList.add("shake");
   }
   // START GAME
   start() {
@@ -117,9 +114,9 @@ class Game {
     this.ship.reset();
     //
 
-    clearInterval(this.enemiesInterval);
+    clearInterval(this.enemiesBirthInterval);
     this.enemies = [];
-    this.enemiesInterval = setInterval(() => {
+    this.enemiesBirthInterval = setInterval(() => {
       this.enemies.push(
         new Enemy(
           Math.random() * (this.width - 20) + 10,
@@ -145,12 +142,18 @@ class Game {
     this.hud.show();
     this.started = true;
     this.paused = false;
+    this.music.resume();
   }
   // PAUSE GAME
   togglePause() {
     if (this.started) {
       this.paused = !this.paused;
       this.screenPause.toggle(this.paused);
+      if (this.paused) {
+        this.music.pause();
+      } else {
+        this.music.resume();
+      }
     }
   }
   // END GAME
@@ -158,6 +161,21 @@ class Game {
     this.started = false;
     this.hud.hide();
     this.screenEnd.show();
+    this.music.stop();
+  }
+  initialEventListeners() {
+    const resize = () => {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+    };
+    window.addEventListener("resize", resize);
+    resize();
+    //
+    this.canvas.addEventListener("animationend", () => {
+      this.canvas.classList.remove("shake");
+    });
   }
 }
 

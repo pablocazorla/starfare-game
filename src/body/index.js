@@ -5,8 +5,8 @@ class Body {
     this.x = x;
     this.y = y;
     this.game = game;
-    this.width = 50;
-    this.height = 50;
+    this.width = 100;
+    this.height = 100;
     this.markedToDelete = false;
   }
   debugDraw() {

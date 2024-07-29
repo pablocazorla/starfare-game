@@ -1,8 +1,8 @@
 class InputHandler {
   constructor(keyList) {
-    this.keys = keyList.reduce((acc, key) => {
-      acc[key] = false;
-      return acc;
+    this.keys = keyList.reduce((obj, key) => {
+      obj[key] = false;
+      return obj;
     }, {});
 
     window.addEventListener("keydown", (event) => {

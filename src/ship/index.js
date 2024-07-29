@@ -1,6 +1,7 @@
 import Body from "../body";
 import Projectile from "../projectiles";
 import Explosion from "../effects/explosion";
+import Sound from "../sound";
 
 class Ship extends Body {
   constructor(game) {
@@ -17,15 +18,17 @@ class Ship extends Body {
     this.maxSpeed = 6;
     this.acceleration = 0.1;
     //
+    this.inclination = 0;
     this.wingSpan = this.width * 0.9;
     //
     this.maxLifes = 5;
     this.lifes = this.maxLifes;
+    //
     this.maxProjectileCharge = 20;
     this.projectileCharge = this.maxProjectileCharge;
     this.projectileChargeInterval = 500;
     this.projectileChargeWait = 0;
-
+    //
     this.shootInterval = 140;
     this.shootWait = this.shootInterval;
     //
@@ -36,23 +39,25 @@ class Ship extends Body {
     this.overPowered = false;
     this.overPoweredTimer = 0;
     this.overPoweredDuration = 10000;
+    //
+    this.shootSound = new Sound("laser");
+    this.shootOverPoweredSound = new Sound("laser2");
+    this.getOverPoweredSound = new Sound("powerUp");
   }
   update(timeFrame) {
-    if (!this.game.started) {
-      return;
-    }
+    if (!this.game.started || this.game.paused) return;
     this.move();
     this.shoot(timeFrame);
     this.detectHitEnemies();
-    this.damageAnimated(timeFrame);
-    this.onOverPowered(timeFrame);
-    this.detectHitOverpowers();
+    this.updateDamageAnimation(timeFrame);
+    this.updateOverPower(timeFrame);
   }
   draw() {
     if (!this.lifes) {
       return;
     }
     const { ctx } = this.game;
+    const { wingSpan, inclination } = this;
 
     // FIRE ROCKET
     ctx.save();
@@ -92,8 +97,6 @@ class Ship extends Body {
       ? 1 - (Math.round(this.damageTimer / 200) % 2)
       : 1;
 
-    const incline = this.speedX / this.maxSpeed;
-    const wingSpan = this.width * 0.9 - Math.abs(incline) * this.width * 0.3;
     ctx.fillStyle = `hsl(${colorTone * 120}, 50%, 54%)`;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y - this.height * 0.3);
@@ -116,9 +119,9 @@ class Ship extends Body {
 
     // AILERON
     const leafSpan = wingSpan * 0.2;
-    const iLeft = incline < 0 ? 9 * incline : 0;
-    const iRight = incline > 0 ? 9 * incline : 0;
-    ctx.fillStyle = `hsl(${colorTone * 180}, 100%, ${60 + 9 * incline}%)`;
+    const iLeft = inclination < 0 ? 9 * inclination : 0;
+    const iRight = inclination > 0 ? 9 * inclination : 0;
+    ctx.fillStyle = `hsl(${colorTone * 180}, 100%, ${60 + 9 * inclination}%)`;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y + this.height * 0.1);
     ctx.lineTo(this.x + leafSpan + iRight, this.y + this.height * 0.5);
@@ -130,7 +133,7 @@ class Ship extends Body {
     // overPowered
     if (this.overPowered) {
       const overPoweredSpanX = this.width * 0.2;
-      ctx.fillStyle = `hsl(${colorTone * 180}, 100%, ${60 + 9 * incline}%)`;
+      ctx.fillStyle = `hsl(180, 100%, 60%)`;
       //
       ctx.beginPath();
       ctx.moveTo(this.x - wingSpan, this.y - this.height * 0.4);
@@ -160,7 +163,6 @@ class Ship extends Body {
       ctx.closePath();
       ctx.fill();
     }
-
     // end
 
     ctx.restore();
@@ -201,6 +203,10 @@ class Ship extends Body {
     if (this.y + this.height / 2 > this.game.height) {
       this.y = this.game.height - this.height / 2;
     }
+    //
+    this.inclination = this.speedX / this.maxSpeed;
+    this.wingSpan =
+      this.width * 0.9 - Math.abs(this.inclination) * this.width * 0.3;
   }
   shoot(timeFrame) {
     if (this.shootWait < this.shootInterval) {
@@ -211,23 +217,28 @@ class Ship extends Body {
       this.shootWait >= this.shootInterval &&
       this.game.input.keys[" "]
     ) {
-      this.game.projectiles.push(new Projectile(this.x, this.y, this.game));
+      this.shootSound.play();
+      this.game.projectiles.push(
+        new Projectile(this.x, this.y - this.height * 0.4, this.game)
+      );
       if (this.overPowered) {
+        this.shootOverPoweredSound.play();
         this.game.projectiles.push(
           new Projectile(
             this.x - this.wingSpan,
-            this.y + this.height * 0.2,
+            this.y - this.height * 0.5,
             this.game
           )
         );
         this.game.projectiles.push(
           new Projectile(
             this.x + this.wingSpan,
-            this.y + this.height * 0.2,
+            this.y - this.height * 0.5,
             this.game
           )
         );
       }
+
       this.projectileCharge--;
       this.shootWait = 0;
     }
@@ -260,19 +271,30 @@ class Ship extends Body {
       this.game.endGame();
     }
   }
-  detectHitOverpowers() {
-    this.game.overpowers.forEach((overpower) => {
-      if (this.detectCollision(overpower)) {
-        this.setOverPowered(overpower);
-      }
-    });
-  }
-  damageAnimated(timeFrame) {
+  updateDamageAnimation(timeFrame) {
     if (this.damaged) {
       this.damageTimer += timeFrame;
       if (this.damageTimer >= this.damageInterval) {
         this.damaged = false;
         this.damageTimer = 0;
+      }
+    }
+  }
+  updateOverPower(timeFrame) {
+    this.game.overpowers.forEach((overpower) => {
+      if (this.detectCollision(overpower) && !this.overPowered) {
+        overpower.markedToDelete = true;
+        this.overPowered = true;
+        this.overPoweredTimer = 0;
+        this.projectileCharge = this.maxProjectileCharge;
+        this.getOverPoweredSound.play();
+      }
+    });
+
+    if (this.overPowered) {
+      this.overPoweredTimer += timeFrame;
+      if (this.overPoweredTimer >= this.overPoweredDuration) {
+        this.overPowered = false;
       }
     }
   }
@@ -286,22 +308,6 @@ class Ship extends Body {
     this.damaged = false;
     this.damageTimer = 0;
     this.overPowered = false;
-  }
-  setOverPowered(overpower) {
-    if (!this.overPowered) {
-      overpower.markedToDelete = true;
-      this.overPowered = true;
-      this.overPoweredTimer = 0;
-      this.projectileCharge = this.maxProjectileCharge;
-    }
-  }
-  onOverPowered(timeFrame) {
-    if (this.overPowered) {
-      this.overPoweredTimer += timeFrame;
-      if (this.overPoweredTimer >= this.overPoweredDuration) {
-        this.overPowered = false;
-      }
-    }
   }
 }
 
