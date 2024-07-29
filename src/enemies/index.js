@@ -1,5 +1,5 @@
-import Body from "./body.js";
-import Explosion from "./explosion.js";
+import Body from "../body/index.js";
+import Explosion from "../effects/explosion/index.js";
 
 class Enemy extends Body {
   constructor(x, y, game) {
@@ -35,11 +35,13 @@ class Enemy extends Body {
     }
 
     // Move
-    if (
-      this.x < 0.5 * this.width ||
-      this.x > this.game.width - 0.5 * this.width
-    ) {
-      this.speedX = -this.speedX;
+    if (this.x < 0.5 * this.width) {
+      this.speedX *= -1;
+      this.x = 0.5 * this.width;
+    }
+    if (this.x > this.game.width - 0.5 * this.width) {
+      this.speedX *= -1;
+      this.x = this.game.width - 0.5 * this.width;
     }
 
     this.x += this.speedX;

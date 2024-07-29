@@ -1,12 +1,12 @@
-import Ship from "./ship.js";
-import InputHandler from "./inputHandler.js";
-import Star from "./star.js";
-import Hud from "./hud.js";
-import Enemy from "./enemy.js";
-import ScreenStart from "./screenStart.js";
-import ScreenPause from "./screenPause.js";
-import ScreenEnd from "./screenEnd.js";
-import Overpower from "./overpower.js";
+import Ship from "../ship";
+import InputHandler from "../input-handler";
+import Starfield from "../bg/starfield";
+import Hud from "../ui/hud";
+import Enemy from "../enemies";
+import ScreenStart from "../ui/screens/start";
+import ScreenPause from "../ui/screens/pause";
+import ScreenEnd from "../ui/screens/end";
+import Overpower from "../upgrades/overpower";
 
 class Game {
   constructor(container, canvas) {
@@ -15,6 +15,15 @@ class Game {
     this.ctx = canvas.getContext("2d");
     this.width = canvas.width;
     this.height = canvas.height;
+    //
+    const resize = () => {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+    };
+    window.addEventListener("resize", resize);
+    resize();
     //
     this.hud = new Hud(this);
     this.input = new InputHandler([
@@ -29,14 +38,9 @@ class Game {
     this.gameSpeed = 1;
     this.score = 0;
     //
-    this.stars = [];
-    setInterval(() => {
-      if (!this.paused) {
-        this.stars.push(new Star(Math.random() * this.width, 0, this));
-      }
-    }, 40);
+    this.starfield = new Starfield(this);
     //
-    this.ship = new Ship(0.5 * this.width, 0.8 * this.height, this);
+    this.ship = new Ship(this);
     this.projectiles = [];
     this.enemies = [];
     this.enemiesInterval = null;
@@ -53,13 +57,11 @@ class Game {
     this.screenStart = new ScreenStart(this);
     this.screenPause = new ScreenPause(this);
     this.screenEnd = new ScreenEnd(this);
-    //
   }
   update(timeFrame) {
     //
     if (!this.paused) {
-      this.stars = this.stars.filter((star) => !star.markedToDelete);
-      this.stars.forEach((star) => star.update());
+      this.starfield.update();
       this.projectiles = this.projectiles.filter(
         (projectile) => !projectile.markedToDelete
       );
@@ -91,7 +93,7 @@ class Game {
   draw() {
     this.ctx.clearRect(0, 0, this.width, this.height);
     //
-    this.stars.forEach((star) => star.draw());
+    this.starfield.draw();
     this.projectiles.forEach((projectile) => projectile.draw());
     this.overpowers.forEach((overpower) => overpower.draw());
     this.enemies.forEach((enemy) => enemy.draw());

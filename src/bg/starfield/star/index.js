@@ -10,9 +10,9 @@ class Star {
     this.markedToDelete = false;
   }
   update() {
-    this.y += this.speedY * this.game.gameSpeed;
+    this.y += this.speedY;
     if (this.y > this.game.height) {
-      this.markedToDelete = true;
+      // this.markedToDelete = true;
     }
   }
   draw() {

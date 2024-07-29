@@ -1,4 +1,4 @@
-import Body from "./body.js";
+import Body from "../../body";
 
 class Overpower extends Body {
   constructor(x, y, game) {

@@ -10,10 +10,9 @@
       body {
         margin: 0;
         padding: 0;
-        background-color: #222;
+        background-color: #000;
         height: 100dvh;
-        display: grid;
-        place-items: center;
+        width: 100dvw;
         overflow: hidden;
       }
       canvas {
@@ -51,7 +50,7 @@
         }
       }
 
-      #starfare-container.shake {
+      #starfarer-container.shake {
         --amplitude: 15px;
         animation: shake 400ms ease 1;
       }
@@ -92,10 +91,9 @@
     </style>
   </head>
   <body>
-    <div id="starfare-container">
-      <canvas id="starfare-canvas" width="700" height="800"></canvas>
+    <div id="starfarer-container">
+      <canvas id="starfarer-canvas" width="700" height="800"></canvas>
     </div>
-
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

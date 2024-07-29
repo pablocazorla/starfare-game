@@ -1,14 +1,14 @@
-import Body from "./body.js";
-import Projectile from "./projectile.js";
-import Explosion from "./explosion.js";
+import Body from "../body";
+import Projectile from "../projectiles";
+import Explosion from "../effects/explosion";
 
 class Ship extends Body {
-  constructor(x, y, game) {
-    super(x, y, game);
-    this.initialX = x;
-    this.initialY = y;
+  constructor(game) {
+    super(-100, -100, game);
     this.width = 45;
     this.height = 65;
+    this.x = 0.5 * this.game.width;
+    this.y = 0.8 * this.game.height;
     //
     this.speedX = 0;
     this.speedY = 0;
@@ -185,18 +185,21 @@ class Ship extends Body {
     }
     this.speedY += (this.currentSpeedY - this.speedY) * this.acceleration;
 
-    if (
-      (this.x - this.width / 2 > 0 && this.speedX < 0) ||
-      (this.x + this.width / 2 < this.game.width && this.speedX > 0)
-    ) {
-      this.x += this.speedX;
+    this.x += this.speedX;
+    this.y += this.speedY;
+
+    if (this.x - this.width / 2 < 0) {
+      this.x = this.width / 2;
+    }
+    if (this.x + this.width / 2 > this.game.width) {
+      this.x = this.game.width - this.width / 2;
     }
 
-    if (
-      (this.y - this.height / 2 > 0 && this.speedY < 0) ||
-      (this.y + this.height / 2 < this.game.height && this.speedY > 0)
-    ) {
-      this.y += this.speedY;
+    if (this.y - this.height / 2 < 0) {
+      this.y = this.height / 2;
+    }
+    if (this.y + this.height / 2 > this.game.height) {
+      this.y = this.game.height - this.height / 2;
     }
   }
   shoot(timeFrame) {
@@ -274,8 +277,8 @@ class Ship extends Body {
     }
   }
   reset() {
-    this.x = this.initialX;
-    this.y = this.initialY;
+    this.x = 0.5 * this.game.width;
+    this.y = 0.8 * this.game.height;
     this.lifes = this.maxLifes;
     this.projectileCharge = this.maxProjectileCharge;
     this.projectileChargeWait = 0;

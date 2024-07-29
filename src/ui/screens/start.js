@@ -1,4 +1,4 @@
-import Screen from "./screen.js";
+import Screen from "./screen-class";
 
 class ScreenStart extends Screen {
   constructor(game) {
