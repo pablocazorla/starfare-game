@@ -2,7 +2,7 @@ import Ship from "../ship";
 import InputHandler from "../input-handler";
 import Starfield from "../bg/starfield";
 import Hud from "../ui/hud";
-import Enemy from "../enemies";
+import createEnemy from "../enemies";
 import ScreenStart from "../ui/screens/start";
 import ScreenPause from "../ui/screens/pause";
 import ScreenEnd from "../ui/screens/end";
@@ -55,6 +55,8 @@ class Game {
     // SOUND
     this.music = new Sound("music");
     this.music.setLoopeable().setVolume(0.2).setInitialTime(2.5);
+
+    //this.start();
   }
   update(timeFrame) {
     //
@@ -117,14 +119,18 @@ class Game {
     clearInterval(this.enemiesBirthInterval);
     this.enemies = [];
     this.enemiesBirthInterval = setInterval(() => {
-      this.enemies.push(
-        new Enemy(
-          Math.random() * (this.width - 20) + 10,
-          -0.1 * this.height,
-          this
-        )
+      const type = Math.random() > 0.18 ? 1 : 2;
+      const enemy = createEnemy(
+        type,
+        Math.random() * (this.width - 20) + 10,
+        -0.1 * this.height,
+        this
       );
+      this.enemies.push(enemy);
     }, 1500);
+
+    /*   const enemy = createEnemy(2, this.width / 2, 0.4 * this.height, this);
+    this.enemies.push(enemy); */
 
     //
     clearInterval(this.overpowersInterval);

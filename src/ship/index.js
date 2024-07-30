@@ -264,7 +264,10 @@ class Ship extends Body {
         this.game.shake();
         this.damaged = true;
         this.overPowered = false;
-        this.lifes--;
+        this.lifes -= enemy.lifesDamagedOnHitShip;
+        if (this.lifes < 0) {
+          this.lifes = 0;
+        }
       }
     });
     if (!this.lifes) {
