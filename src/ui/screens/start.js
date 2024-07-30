@@ -4,7 +4,7 @@ class ScreenStart extends Screen {
   constructor(game) {
     super(game);
     this.game = game;
-    this.showing = true;
+    this.showing = !game.drawMode;
   }
   update(timeFrame) {
     if (!this.showing) {

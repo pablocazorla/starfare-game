@@ -2,6 +2,7 @@ import Body from "../body";
 import Projectile from "../projectiles";
 import Explosion from "../effects/explosion";
 import Sound from "../sound";
+import Graphics from "../graphic";
 
 class Ship extends Body {
   constructor(game) {
@@ -22,7 +23,7 @@ class Ship extends Body {
     this.wingSpan = this.width * 0.9;
     //
     this.maxLifes = 5;
-    this.lifes = this.maxLifes;
+    this.lifes = this.maxLifes - 2;
     //
     this.maxProjectileCharge = 20;
     this.projectileCharge = this.maxProjectileCharge;
@@ -57,6 +58,7 @@ class Ship extends Body {
       return;
     }
     const { ctx } = this.game;
+    const G = Graphics(ctx);
     const { wingSpan, inclination } = this;
 
     // FIRE ROCKET
@@ -74,19 +76,14 @@ class Ship extends Body {
     gradient.addColorStop(0.2, "rgba(255, 255, 0, 1)");
     gradient.addColorStop(0.7, "rgba(255, 0, 0, 0.8)");
     gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.ellipse(
+
+    G.ellipse(
+      gradient,
       this.x,
       this.y + this.height * 0.5,
       this.width * 0.15,
-      this.width * 1.7,
-      0,
-      0,
-      Math.PI * 2
+      this.width * 1.7
     );
-    ctx.closePath();
-    ctx.fill();
     ctx.restore();
 
     // SHIP BODY
@@ -96,72 +93,67 @@ class Ship extends Body {
     const colorTone = this.damaged
       ? 1 - (Math.round(this.damageTimer / 200) % 2)
       : 1;
-
-    ctx.fillStyle = `hsl(${colorTone * 120}, 50%, 54%)`;
-    ctx.beginPath();
-    ctx.moveTo(this.x, this.y - this.height * 0.3);
-    ctx.lineTo(this.x + wingSpan, this.y + this.height * 0.2);
-    ctx.lineTo(this.x, this.y + this.height * 0.5);
-    ctx.lineTo(this.x - wingSpan, this.y + this.height * 0.2);
-    ctx.closePath();
-    ctx.fill();
+    G.shape(`hsl(${colorTone * 120}, 50%, 54%)`, [
+      [this.x, this.y - this.height * 0.3],
+      [this.x + wingSpan, this.y + this.height * 0.2],
+      [this.x, this.y + this.height * 0.5],
+      [this.x - wingSpan, this.y + this.height * 0.2],
+    ]);
 
     // CABIN
     const cabinSpan = wingSpan * 0.5;
-    ctx.fillStyle = `hsl(${colorTone * 150}, 100%, 30%)`;
-    ctx.beginPath();
-    ctx.moveTo(this.x, this.y - this.height * 0.6);
-    ctx.lineTo(this.x + cabinSpan, this.y + this.height * 0.4);
-    ctx.lineTo(this.x, this.y + this.height * 0.6);
-    ctx.lineTo(this.x - cabinSpan, this.y + this.height * 0.4);
-    ctx.closePath();
-    ctx.fill();
+    G.shape(`hsl(${colorTone * 150}, 100%, 30%)`, [
+      [this.x, this.y - this.height * 0.6],
+      [this.x + cabinSpan, this.y + this.height * 0.4],
+      [this.x, this.y + this.height * 0.6],
+      [this.x - cabinSpan, this.y + this.height * 0.4],
+    ]);
 
     // AILERON
     const leafSpan = wingSpan * 0.2;
     const iLeft = inclination < 0 ? 9 * inclination : 0;
     const iRight = inclination > 0 ? 9 * inclination : 0;
-    ctx.fillStyle = `hsl(${colorTone * 180}, 100%, ${60 + 9 * inclination}%)`;
-    ctx.beginPath();
-    ctx.moveTo(this.x, this.y + this.height * 0.1);
-    ctx.lineTo(this.x + leafSpan + iRight, this.y + this.height * 0.5);
-    ctx.lineTo(this.x, this.y + this.height * 0.7);
-    ctx.lineTo(this.x - leafSpan + iLeft, this.y + this.height * 0.5);
-    ctx.closePath();
-    ctx.fill();
+
+    G.shape(`hsl(${colorTone * 180}, 100%, ${60 + 9 * inclination}%)`, [
+      [this.x, this.y + this.height * 0.1],
+      [this.x + leafSpan + iRight, this.y + this.height * 0.5],
+      [this.x, this.y + this.height * 0.7],
+      [this.x - leafSpan + iLeft, this.y + this.height * 0.5],
+    ]);
 
     // overPowered
     if (this.overPowered) {
       const overPoweredSpanX = this.width * 0.2;
-      ctx.fillStyle = `hsl(180, 100%, 60%)`;
-      //
-      ctx.beginPath();
-      ctx.moveTo(this.x - wingSpan, this.y - this.height * 0.4);
-      ctx.lineTo(
-        this.x - wingSpan + overPoweredSpanX,
-        this.y + this.height * 0.2
+
+      G.shape(`hsl(180, 100%, 60%)`, [
+        [this.x - wingSpan, this.y - this.height * 0.4],
+        [this.x - wingSpan + overPoweredSpanX, this.y + this.height * 0.2],
+        [this.x - wingSpan, this.y + this.height * 0.4],
+        [this.x - wingSpan - overPoweredSpanX, this.y + this.height * 0.2],
+      ]).shape(null, [
+        [this.x + wingSpan, this.y - this.height * 0.4],
+        [this.x + wingSpan + overPoweredSpanX, this.y + this.height * 0.2],
+        [this.x + wingSpan, this.y + this.height * 0.4],
+        [this.x + wingSpan - overPoweredSpanX, this.y + this.height * 0.2],
+      ]);
+
+      // Line of Lifes
+      const lineLifeWidth = this.width * 0.6;
+      const lineLifeHeight = 3;
+
+      G.rect(
+        "#555",
+        this.x - 0.5 * lineLifeWidth,
+        this.y + 0.76 * this.height,
+        lineLifeWidth,
+        lineLifeHeight
+      ).rect(
+        "hsl(180, 100%, 70%)",
+        this.x - 0.5 * lineLifeWidth,
+        this.y + 0.76 * this.height,
+        lineLifeWidth * (1 - this.overPoweredTimer / this.overPoweredDuration),
+        lineLifeHeight
       );
-      ctx.lineTo(this.x - wingSpan, this.y + this.height * 0.4);
-      ctx.lineTo(
-        this.x - wingSpan - overPoweredSpanX,
-        this.y + this.height * 0.2
-      );
-      ctx.closePath();
-      ctx.fill();
-      //
-      ctx.beginPath();
-      ctx.moveTo(this.x + wingSpan, this.y - this.height * 0.4);
-      ctx.lineTo(
-        this.x + wingSpan + overPoweredSpanX,
-        this.y + this.height * 0.2
-      );
-      ctx.lineTo(this.x + wingSpan, this.y + this.height * 0.4);
-      ctx.lineTo(
-        this.x + wingSpan - overPoweredSpanX,
-        this.y + this.height * 0.2
-      );
-      ctx.closePath();
-      ctx.fill();
     }
     // end
 

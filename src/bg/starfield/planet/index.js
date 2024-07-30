@@ -1,3 +1,5 @@
+import Graphics from "../../../graphic/";
+
 class Planet {
   constructor(x, y, speedY, game) {
     this.x = x;
@@ -16,33 +18,32 @@ class Planet {
   }
   draw() {
     const { ctx } = this.game;
+
+    const G = Graphics(ctx);
     ctx.save();
-    ctx.fillStyle = `hsl(${this.colorTone}, 100%, 10%)`;
 
     ctx.shadowColor = `hsl(${this.colorTone}, 100%, 20%)`;
     ctx.shadowBlur = this.radius * 0.2;
 
-    ctx.beginPath();
-    ctx.ellipse(this.x, this.y, this.radius, this.radius, 0, 0, Math.PI * 2);
-    ctx.closePath();
-    ctx.fill();
+    G.ellipse(
+      `hsl(${this.colorTone}, 100%, 10%)`,
+      this.x,
+      this.y,
+      this.radius,
+      this.radius
+    );
 
     const lightRadius = this.radius * 1.2;
 
     ctx.clip();
-    ctx.fillStyle = `hsl(${this.colorTone}, 100%, 20%)`;
-    ctx.beginPath();
-    ctx.ellipse(
+
+    G.ellipse(
+      `hsl(${this.colorTone}, 100%, 20%)`,
       this.x - this.radius * 0.4,
       this.y - this.radius * 0.4,
       lightRadius,
-      lightRadius,
-      0,
-      0,
-      Math.PI * 2
+      lightRadius
     );
-    ctx.closePath();
-    ctx.fill();
     ctx.restore();
   }
 }

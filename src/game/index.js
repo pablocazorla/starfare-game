@@ -31,6 +31,7 @@ class Game {
 
     // STATES
     this.debugMode = false;
+    this.drawMode = false;
     this.gameSpeed = 1;
     this.score = 0;
     this.started = false;
@@ -56,6 +57,9 @@ class Game {
     this.music = new Sound("music");
     this.music.setLoopeable().setVolume(0.2).setInitialTime(2.5);
 
+    if (this.drawMode) {
+      this.start();
+    }
     //this.start();
   }
   update(timeFrame) {
@@ -129,7 +133,7 @@ class Game {
       this.enemies.push(enemy);
     }, 1500);
 
-    /*   const enemy = createEnemy(2, this.width / 2, 0.4 * this.height, this);
+    /* const enemy = createEnemy(2, this.width / 2, 0.4 * this.height, this);
     this.enemies.push(enemy); */
 
     //

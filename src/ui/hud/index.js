@@ -1,3 +1,5 @@
+import Graphics from "../../graphic";
+
 class Hud {
   constructor(game) {
     this.game = game;
@@ -10,6 +12,9 @@ class Hud {
       return;
     }
     const { ctx } = this.game;
+
+    const G = Graphics(ctx);
+
     ctx.save();
     ctx.fillStyle = "#fff";
     ctx.strokeStyle = "#ddd";
@@ -17,12 +22,12 @@ class Hud {
     ctx.textAlign = "right";
     ctx.textBaseline = "top";
     ctx.font = "bold 22px Courier New";
-    this.drawLifes(ctx);
+    this.drawLifes(G);
     this.drawProyectileCharge(ctx);
     this.drawScore(ctx);
     ctx.restore();
   }
-  drawLifes(ctx) {
+  drawLifes(G) {
     const a = 5;
     const b = a * 1.4;
     const x = this.paddingX;
@@ -31,18 +36,19 @@ class Hud {
 
     let d = 0;
     while (d < this.game.ship.maxLifes) {
-      ctx.beginPath();
-      ctx.moveTo(x + d * dx, y + b);
-      ctx.lineTo(x + d * dx + a, y);
-      ctx.lineTo(x + d * dx + 2 * a, y + b * 0.6);
-      ctx.lineTo(x + d * dx + 3 * a, y);
-      ctx.lineTo(x + d * dx + 4 * a, y + b);
-      ctx.lineTo(x + d * dx + 2 * a, y + 2.3 * b);
-      ctx.closePath();
-      ctx.stroke();
+      G.shape("nofill", [
+        [x + d * dx, y + b],
+        [x + d * dx + a, y],
+        [x + d * dx + 2 * a, y + b * 0.6],
+        [x + d * dx + 3 * a, y],
+        [x + d * dx + 4 * a, y + b],
+        [x + d * dx + 2 * a, y + 2.3 * b],
+      ]);
+
+      G.ctx.stroke();
 
       if (d < this.game.ship.lifes) {
-        ctx.fill();
+        G.ctx.fill();
       }
       d++;
     }

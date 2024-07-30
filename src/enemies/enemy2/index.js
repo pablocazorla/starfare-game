@@ -1,5 +1,6 @@
 import Enemy from "../enemy-class.js";
 import AnimationFrame from "../../animationFrame/index.js";
+import Graphics from "../../graphic/";
 
 class Enemy2 extends Enemy {
   constructor(x, y, game) {
@@ -29,197 +30,130 @@ class Enemy2 extends Enemy {
     //
     const { ctx } = this.game;
 
-    let colorLight = 70;
+    const y = this.y - this.impactY;
+
+    const G = Graphics(ctx);
+
+    const color = (c) => `hsl(30, 100%, ${c}%)`;
+
+    ctx.save();
 
     // FEET
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.moveTo(
-      this.x - this.width * 0.35 - frameHorns,
-      this.y + this.height * 0.44
-    );
-    ctx.lineTo(this.x - this.width * 0.3, this.y);
-    ctx.lineTo(this.x - this.width * 0.18, this.y + this.height * 0.1);
-    ctx.closePath();
-    ctx.fill();
 
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.moveTo(
-      this.x + this.width * 0.35 + frameHorns,
-      this.y + this.height * 0.44
-    );
-    ctx.lineTo(this.x + this.width * 0.3, this.y);
-    ctx.lineTo(this.x + this.width * 0.18, this.y + this.height * 0.1);
-    ctx.closePath();
-    ctx.fill();
-
-    // BODY
-    colorLight = 50;
-    ctx.save();
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.ellipse(
-      this.x,
-      this.y - this.height * 0.5,
-      this.width * 0.5 + frameBreath,
-      this.height * 0.95,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-
-    ctx.clip();
-
-    ctx.beginPath();
-    ctx.ellipse(
-      this.x,
-      this.y + this.height * 0.6,
-      this.width * 0.8,
-      this.height * 1,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fill();
+    G.shape(color(70), [
+      [this.x - this.width * 0.35 - frameHorns, y + this.height * 0.44],
+      [this.x - this.width * 0.3, y],
+      [this.x - this.width * 0.18, y + this.height * 0.1],
+    ]).shape(null, [
+      [this.x + this.width * 0.35 + frameHorns, y + this.height * 0.44],
+      [this.x + this.width * 0.3, y],
+      [this.x + this.width * 0.18, y + this.height * 0.1],
+    ]);
 
     ctx.restore();
-    //
+
+    // BODY
     ctx.save();
 
+    //CLIP
+    G.ellipse(
+      "clip",
+      this.x,
+      y - this.height * 0.5,
+      this.width * 0.5 + frameBreath,
+      this.height * 0.95
+    );
+    //end CLIP
+
+    G.ellipse(
+      color(50),
+      this.x,
+      y + this.height * 0.6,
+      this.width * 0.8,
+      this.height * 1
+    );
+    ctx.restore();
+
+    ctx.save();
     // HEAD
     // HORNS
-    colorLight = 60;
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.moveTo(
-      this.x - this.width * 0.2 + frameHorns,
-      this.y - this.height * 0.8
-    );
-    ctx.lineTo(this.x, this.y - this.height * 0.4);
-    ctx.lineTo(this.x - this.width * 0.12, this.y - this.height * 0.4);
-    ctx.closePath();
-    ctx.fill();
 
-    ctx.beginPath();
-    ctx.moveTo(
-      this.x + this.width * 0.2 - frameHorns,
-      this.y - this.height * 0.8
-    );
-    ctx.lineTo(this.x, this.y - this.height * 0.4);
-    ctx.lineTo(this.x + this.width * 0.12, this.y - this.height * 0.4);
-    ctx.closePath();
-    ctx.fill();
+    G.shape(color(60), [
+      [this.x + this.width * 0.2 - frameHorns, y - this.height * 0.8],
+      [this.x, y - this.height * 0.4],
+      [this.x + this.width * 0.12, y - this.height * 0.4],
+    ]).shape(null, [
+      [this.x - this.width * 0.2 + frameHorns, y - this.height * 0.8],
+      [this.x, y - this.height * 0.4],
+      [this.x - this.width * 0.12, y - this.height * 0.4],
+    ]);
+
     // HEAD SHADOW
-    colorLight = 30;
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.ellipse(
+    G.ellipse(
+      color(30),
       this.x,
-      this.y - this.height * 0.3 + frameBreath,
+      y - this.height * 0.3 + frameBreath,
       this.width * 0.19,
-      this.width * 0.17,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fill();
-    colorLight = 40;
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.ellipse(
-      this.x,
-      this.y - this.height * 0.3 + frameBreath,
-      this.width * 0.16,
-      this.width * 0.16,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fill();
+      this.width * 0.17
+    )
+      // HEAD
+      .ellipse(
+        color(45),
+        this.x,
+        y - this.height * 0.3 + frameBreath,
+        this.width * 0.16,
+        this.width * 0.16
+      );
 
     // EYE
     const frameEye = this.animationEye.frame;
-    colorLight = 15;
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.ellipse(
+
+    G.ellipse(
+      color(15),
       this.x,
-      this.y - this.height * 0.3 + frameBreath,
+      y - this.height * 0.3 + frameBreath,
       this.width * (frameEye === 0 ? 0.14 : 0.018),
-      this.width * 0.14,
-      0,
-      0,
-      Math.PI * 2
+      this.width * 0.14
     );
-    ctx.closePath();
-    ctx.fill();
 
     // SPIRACULUS
-    colorLight = 15;
+
     //1_izq
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.ellipse(
+
+    G.ellipse(
+      color(15),
       this.x - this.width * 0.3,
-      this.y - this.height * 0.1,
+      y - this.height * 0.1,
       this.width * 0.04 - frameBreath * 0.3,
-      this.width * 0.04 - frameBreath * 0.3,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fill();
+      this.width * 0.04 - frameBreath * 0.3
+    )
 
-    //1_der
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.ellipse(
-      this.x + this.width * 0.3,
-      this.y - this.height * 0.1,
-      this.width * 0.04 - frameBreath * 0.3,
-      this.width * 0.04 - frameBreath * 0.3,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fill();
+      //1_der
+      .ellipse(
+        null,
+        this.x + this.width * 0.3,
+        y - this.height * 0.1,
+        this.width * 0.04 - frameBreath * 0.3,
+        this.width * 0.04 - frameBreath * 0.3
+      )
 
-    //2_izq
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.ellipse(
-      this.x - this.width * 0.1,
-      this.y + this.height * 0.25,
-      this.width * 0.03 - frameBreath * 0.3,
-      this.width * 0.03 - frameBreath * 0.3,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fill();
+      //2_izq
+      .ellipse(
+        null,
+        this.x - this.width * 0.1,
+        y + this.height * 0.25,
+        this.width * 0.03 - frameBreath * 0.3,
+        this.width * 0.03 - frameBreath * 0.3
+      )
 
-    //2_der
-    ctx.fillStyle = `hsl(30, 100%, ${colorLight}%)`;
-    ctx.beginPath();
-    ctx.ellipse(
-      this.x + this.width * 0.1,
-      this.y + this.height * 0.25,
-      this.width * 0.03 - frameBreath * 0.3,
-      this.width * 0.03 - frameBreath * 0.3,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fill();
+      //2_der
+      .ellipse(
+        null,
+        this.x + this.width * 0.1,
+        y + this.height * 0.25,
+        this.width * 0.03 - frameBreath * 0.3,
+        this.width * 0.03 - frameBreath * 0.3
+      );
 
     ctx.restore();
 
