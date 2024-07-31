@@ -1,6 +1,6 @@
 import Ship from "../ship";
 import InputHandler from "../input-handler";
-import Starfield from "../bg/starfield";
+import Bg from "../bg";
 import Hud from "../ui/hud";
 import createEnemy from "../enemies";
 import ScreenStart from "../ui/screens/start";
@@ -8,6 +8,8 @@ import ScreenPause from "../ui/screens/pause";
 import ScreenEnd from "../ui/screens/end";
 import Overpower from "../upgrades/overpower";
 import Sound from "../sound";
+import Timer from "../utils/timer";
+import { updateCollection, drawCollection } from "../utils/collection";
 
 class Game {
   constructor(canvasId) {
@@ -20,7 +22,7 @@ class Game {
     this.initialEventListeners();
 
     // OBJECTS
-    this.starfield = new Starfield(this);
+    this.bg = new Bg(this);
     this.ship = new Ship(this);
     this.projectiles = [];
     this.enemies = [];
@@ -29,9 +31,36 @@ class Game {
     this.overpowers = [];
     this.overpowersBirthInterval = null;
 
+    // TIMERS
+    this.enemiesTimer = new Timer(1500);
+
+    this.enemiesTimer.each(() => {
+      const typeNum = Math.random();
+      const type = typeNum < 0.05 ? 3 : typeNum < 0.18 ? 2 : 1;
+      const enemy = createEnemy(
+        type,
+        Math.random() * (this.width - 20) + 10,
+        -0.1 * this.height,
+        this
+      );
+      this.enemies.push(enemy);
+    });
+
+    this.overpowersTimer = new Timer(20000);
+    this.overpowersTimer.each(() => {
+      this.overpowers.push(
+        new Overpower(
+          Math.random() * (this.width - 20) + 10,
+          -0.1 * this.height,
+          this
+        )
+      );
+    });
+
     // STATES
     this.debugMode = false;
     this.drawMode = false;
+    this.muted = false;
     this.gameSpeed = 1;
     this.score = 0;
     this.started = false;
@@ -54,36 +83,38 @@ class Game {
     ]);
 
     // SOUND
-    this.music = new Sound("music");
+    this.music = new Sound(this, "music");
     this.music.setLoopeable().setVolume(0.2).setInitialTime(2.5);
 
     if (this.drawMode) {
       this.start();
     }
-    //this.start();
+    //temp
+    /*  const enemy = createEnemy(3, 0.5 * this.width, 0.4 * this.height, this);
+    this.enemies.push(enemy); */
   }
   update(timeFrame) {
     //
     if (!this.paused) {
-      this.starfield.update();
-      this.projectiles = this.projectiles.filter(
-        (projectile) => !projectile.markedToDelete
-      );
-      this.projectiles.forEach((projectile) => projectile.update());
+      this.bg.update(timeFrame);
 
-      //
-      this.overpowers = this.overpowers.filter(
-        (overpower) => !overpower.markedToDelete
-      );
-      this.overpowers.forEach((overpower) => overpower.update(timeFrame));
-      //
-      this.enemies = this.enemies.filter((enemy) => !enemy.markedToDelete);
-      this.enemies.forEach((enemy) => enemy.update(timeFrame));
-      //
-      this.explosions = this.explosions.filter(
-        (explosion) => !explosion.markedToDelete
-      );
-      this.explosions.forEach((explosion) => explosion.update(timeFrame));
+      // PROJECTILES
+      updateCollection(this, "projectiles", timeFrame);
+
+      // ENEMIES
+      updateCollection(this, "enemies", timeFrame);
+      if (this.started) {
+        this.enemiesTimer.update(timeFrame);
+      }
+
+      // OVERPOWERS
+      updateCollection(this, "overpowers", timeFrame);
+      if (this.started) {
+        this.overpowersTimer.update(timeFrame);
+      }
+
+      // EXPLOSIONS
+      updateCollection(this, "explosions", timeFrame);
     }
     this.ship.update(timeFrame);
     //
@@ -96,13 +127,23 @@ class Game {
   draw() {
     this.ctx.clearRect(0, 0, this.width, this.height);
     //
-    this.starfield.draw();
-    this.projectiles.forEach((projectile) => projectile.draw());
-    this.overpowers.forEach((overpower) => overpower.draw());
-    this.enemies.forEach((enemy) => enemy.draw());
+    this.bg.draw();
+
+    // PROJECTILES
+    drawCollection(this.projectiles);
+
+    // ENEMIES
+    drawCollection(this.enemies);
+
+    // OVERPOWERS
+    drawCollection(this.overpowers);
+
+    // SHIP
     this.ship.draw();
-    //
-    this.explosions.forEach((explosion) => explosion.draw());
+
+    // EXPLOSIONS
+    drawCollection(this.explosions);
+
     //
     this.hud.draw();
     //
@@ -117,37 +158,11 @@ class Game {
   start() {
     this.projectiles = [];
     this.explosions = [];
+    this.enemies = [];
+    this.overpowers = [];
     this.ship.reset();
     //
 
-    clearInterval(this.enemiesBirthInterval);
-    this.enemies = [];
-    this.enemiesBirthInterval = setInterval(() => {
-      const type = Math.random() > 0.18 ? 1 : 2;
-      const enemy = createEnemy(
-        type,
-        Math.random() * (this.width - 20) + 10,
-        -0.1 * this.height,
-        this
-      );
-      this.enemies.push(enemy);
-    }, 1500);
-
-    /* const enemy = createEnemy(2, this.width / 2, 0.4 * this.height, this);
-    this.enemies.push(enemy); */
-
-    //
-    clearInterval(this.overpowersInterval);
-    this.overpowers = [];
-    this.overpowersInterval = setInterval(() => {
-      this.overpowers.push(
-        new Overpower(
-          Math.random() * (this.width - 20) + 10,
-          -0.1 * this.height,
-          this
-        )
-      );
-    }, 20000);
     this.score = 0;
     this.hud.show();
     this.started = true;

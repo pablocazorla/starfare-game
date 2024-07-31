@@ -1,4 +1,4 @@
-import Graphics from "../../../graphic/";
+import Graphics from "../../utils/graphic";
 
 class Planet {
   constructor(x, y, speedY, game) {

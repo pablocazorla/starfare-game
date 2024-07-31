@@ -21,8 +21,8 @@ class Explosion {
     //
     this.markedToDelete = false;
     //
-    this.boomSound = new Sound("boom");
-    this.boomSound2 = new Sound("boom2");
+    this.boomSound = new Sound(game, "boom");
+    this.boomSound2 = new Sound(game, "boom2");
     if (color) {
       this.boomSound2.setVolume(0.8).play();
     } else {

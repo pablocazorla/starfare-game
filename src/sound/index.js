@@ -1,13 +1,12 @@
-const muted = false;
-
 class Sound {
-  constructor(id) {
+  constructor(game, id) {
     const src = document.getElementById(id).src;
     this.audio = new Audio(src);
     this.initialTime = 0;
+    this.game = game;
   }
   play() {
-    if (!muted) {
+    if (!this.game.muted) {
       this.audio.currentTime = this.initialTime;
       this.audio.play();
     }
@@ -19,7 +18,7 @@ class Sound {
     return this;
   }
   resume() {
-    if (!muted) {
+    if (!this.game.muted) {
       this.audio.play();
     }
     return this;

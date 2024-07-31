@@ -1,6 +1,6 @@
 import Enemy from "../enemy-class.js";
-import AnimationFrame from "../../animationFrame/index.js";
-import Graphics from "../../graphic/";
+import AnimationFrame from "../../utils/animationFrame";
+import Graphics from "../../utils/graphic";
 
 class Enemy2 extends Enemy {
   constructor(x, y, game) {
@@ -12,6 +12,8 @@ class Enemy2 extends Enemy {
     this.maxLifes = 6;
     this.lifes = this.maxLifes;
     this.value = 36;
+
+    this.speedY = Math.random() + 2;
 
     this.animationBreath = new AnimationFrame(8, 800);
     this.animationEye = new AnimationFrame(6, 2400);

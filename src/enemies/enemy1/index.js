@@ -1,6 +1,6 @@
 import Enemy from "../enemy-class.js";
-import AnimationFrame from "../../animationFrame/index.js";
-import Graphics from "../../graphic/";
+import AnimationFrame from "../../utils/animationFrame";
+import Graphics from "../../utils/graphic";
 
 class Enemy1 extends Enemy {
   constructor(x, y, game) {

@@ -2,7 +2,7 @@ import Body from "../body";
 import Projectile from "../projectiles";
 import Explosion from "../effects/explosion";
 import Sound from "../sound";
-import Graphics from "../graphic";
+import Graphics from "../utils/graphic";
 
 class Ship extends Body {
   constructor(game) {
@@ -41,9 +41,9 @@ class Ship extends Body {
     this.overPoweredTimer = 0;
     this.overPoweredDuration = 10000;
     //
-    this.shootSound = new Sound("laser");
-    this.shootOverPoweredSound = new Sound("laser2");
-    this.getOverPoweredSound = new Sound("powerUp");
+    this.shootSound = new Sound(game, "laser");
+    this.shootOverPoweredSound = new Sound(game, "laser2");
+    this.getOverPoweredSound = new Sound(game, "powerUp");
   }
   update(timeFrame) {
     if (!this.game.started || this.game.paused) return;

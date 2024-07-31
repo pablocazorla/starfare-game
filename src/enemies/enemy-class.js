@@ -1,6 +1,6 @@
 import Body from "../body/index.js";
 import Explosion from "../effects/explosion/index.js";
-import Graphics from "../graphic/index.js";
+import Graphics from "../utils/graphic";
 
 class Enemy extends Body {
   constructor(x, y, game) {
@@ -12,8 +12,8 @@ class Enemy extends Body {
     this.maxLifes = 3;
     this.lifes = this.maxLifes;
     this.value = 15;
-    this.speedX = Math.random() * 2 - 3;
-    this.speedY = Math.random() * 1 + 1;
+    this.speedX = Math.random() * 4 - 2;
+    this.speedY = Math.random() + 1;
 
     this.impactY = 0;
     this.maxImpactY = 8;
@@ -31,6 +31,9 @@ class Enemy extends Body {
       this.game.score += this.value;
       this.markedToDelete = true;
       this.game.explosions.push(new Explosion(this.x, this.y, this.game, 100));
+      if (this.afterDelete) {
+        this.afterDelete();
+      }
     }
 
     // Move
@@ -52,7 +55,7 @@ class Enemy extends Body {
     }
     this.impactY *= this.impactYacceleration;
   }
-  drawLifes() {
+  drawLifes(yPos = 0) {
     const { ctx } = this.game;
 
     const G = Graphics(ctx);
@@ -66,13 +69,13 @@ class Enemy extends Body {
     G.rect(
       "#333",
       this.x - 0.5 * lineLifeWidth,
-      this.y + 0.5 * this.height - this.impactY,
+      this.y + 0.5 * this.height - this.impactY + yPos,
       lineLifeWidth,
       lineLifeHeight
     ).rect(
       "#F60",
       this.x - 0.5 * lineLifeWidth,
-      this.y + 0.5 * this.height - this.impactY,
+      this.y + 0.5 * this.height - this.impactY + yPos,
       (lineLifeWidth * this.lifes) / this.maxLifes,
       lineLifeHeight
     );
