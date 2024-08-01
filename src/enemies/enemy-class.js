@@ -18,9 +18,10 @@ class Enemy extends Body {
     this.impactY = 0;
     this.maxImpactY = 8;
     this.impactYacceleration = 0.9;
+    this.explotionSize = 1;
   }
   updateEnemy() {
-    this.game.projectiles.forEach((projectile) => {
+    this.game.bullets.forEach((projectile) => {
       if (this.detectCollision(projectile)) {
         this.lifes--;
         this.impactY = this.maxImpactY;
@@ -30,7 +31,9 @@ class Enemy extends Body {
     if (this.lifes <= 0) {
       this.game.score += this.value;
       this.markedToDelete = true;
-      this.game.explosions.push(new Explosion(this.x, this.y, this.game, 100));
+      this.game.explosions.push(
+        new Explosion(this.x, this.y, this.game, this.explotionSize)
+      );
       if (this.afterDelete) {
         this.afterDelete();
       }

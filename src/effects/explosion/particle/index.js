@@ -1,15 +1,20 @@
 class Particle {
-  constructor(explosion) {
+  constructor(explosion, size) {
     this.explosion = explosion;
+    this.name = "Particle";
     //
     this.x = explosion.x;
     this.y = explosion.y;
     this.radius = Math.random() * 14 + 3;
-    this.duration = Math.random() * 1600 + 300;
+    this.duration = size * Math.random() * 1600 + 300;
     this.bornTime = Math.random() * 400;
     this.time = this.duration;
-    this.speedX = Math.random() * 6 - 2;
-    this.speedY = Math.random() * 6 - 2;
+    this.speedX = Math.random() * 6 - 3;
+    this.speedY = Math.random() * 6 - 3;
+
+    this.speed = Math.random() * 3;
+    this.speedY = 0.06;
+    this.angle = Math.random() * Math.PI * 2;
     this.acceleration = 0.98;
     //
     this.markedToDelete = false;
@@ -21,12 +26,17 @@ class Particle {
         this.markedToDelete = true;
         return;
       }
-      this.speedX *= this.acceleration;
-      this.speedY *= this.acceleration;
-      this.x += this.speedX;
-      this.y += this.speedY + this.explosion.gravityY;
+
+      this.speed *= this.acceleration;
+      this.speedY *= this.explosion.gravityY;
+
+      this.x += Math.cos(this.angle) * this.speed;
+      this.y += Math.sin(this.angle) * this.speed + this.speedY;
     } else {
       this.bornTime -= timeFrame;
+    }
+    if (this.y > this.explosion.game.height) {
+      this.markedToDelete = true;
     }
   }
   draw(ctx) {

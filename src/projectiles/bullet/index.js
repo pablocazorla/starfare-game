@@ -1,8 +1,9 @@
-import Body from "../body/index.js";
+import Body from "../../body/index.js";
 
 class Projectile extends Body {
   constructor(x, y, game) {
     super(x, y, game);
+    this.name = "Projectile";
     this.width = 6;
     this.height = 12;
     this.speedY = 7;

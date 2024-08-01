@@ -1,5 +1,5 @@
 import Body from "../body";
-import Projectile from "../projectiles";
+import Bullet from "../projectiles/bullet";
 import Explosion from "../effects/explosion";
 import Sound from "../sound";
 import Graphics from "../utils/graphic";
@@ -7,6 +7,7 @@ import Graphics from "../utils/graphic";
 class Ship extends Body {
   constructor(game) {
     super(-100, -100, game);
+    this.name = "Ship";
     this.width = 45;
     this.height = 65;
     this.x = 0.5 * this.game.width;
@@ -210,20 +211,20 @@ class Ship extends Body {
       this.game.input.keys[" "]
     ) {
       this.shootSound.play();
-      this.game.projectiles.push(
-        new Projectile(this.x, this.y - this.height * 0.4, this.game)
+      this.game.bullets.push(
+        new Bullet(this.x, this.y - this.height * 0.4, this.game)
       );
       if (this.overPowered) {
         this.shootOverPoweredSound.play();
-        this.game.projectiles.push(
-          new Projectile(
+        this.game.bullets.push(
+          new Bullet(
             this.x - this.wingSpan,
             this.y - this.height * 0.5,
             this.game
           )
         );
-        this.game.projectiles.push(
-          new Projectile(
+        this.game.bullets.push(
+          new Bullet(
             this.x + this.wingSpan,
             this.y - this.height * 0.5,
             this.game
@@ -247,23 +248,29 @@ class Ship extends Body {
     }
   }
   detectHitEnemies() {
-    this.game.enemies.forEach((enemy) => {
-      if (this.detectCollision(enemy)) {
-        enemy.markedToDelete = true;
-        this.game.explosions.push(
-          new Explosion(enemy.x, enemy.y, this.game, 100, 20)
-        );
-        this.game.shake();
-        this.damaged = true;
-        this.overPowered = false;
-        this.lifes -= enemy.lifesDamagedOnHitShip;
-        if (this.lifes < 0) {
-          this.lifes = 0;
-        }
-      }
-    });
+    this.detectHitToDamage("enemies");
+    this.detectHitToDamage("bombs");
     if (!this.lifes) {
       this.game.endGame();
+    }
+  }
+  detectHitToDamage(collectionName) {
+    if (this.game[collectionName].length) {
+      this.game[collectionName].forEach((item) => {
+        if (this.detectCollision(item)) {
+          item.markedToDelete = true;
+          this.game.explosions.push(
+            new Explosion(item.x, item.y, this.game, 0.5 * item?.type || 1, 20)
+          );
+          this.game.shake();
+          this.damaged = true;
+          this.overPowered = false;
+          this.lifes -= item.lifesDamagedOnHitShip;
+          if (this.lifes < 0) {
+            this.lifes = 0;
+          }
+        }
+      });
     }
   }
   updateDamageAnimation(timeFrame) {

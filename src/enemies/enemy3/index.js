@@ -2,11 +2,12 @@ import Enemy from "../enemy-class.js";
 import AnimationFrame from "../../utils/animationFrame";
 import Graphics from "../../utils/graphic";
 import createEnemy from "../index.js";
+import Bomb from "../../projectiles/bomb";
 
 class Enemy3 extends Enemy {
   constructor(x, y, game) {
     super(x, y, game);
-
+    this.name = "Enemy3";
     this.type = 3;
     this.lifesDamagedOnHitShip = 2;
     this.width = 300;
@@ -19,7 +20,9 @@ class Enemy3 extends Enemy {
     this.animationEye = new AnimationFrame(6, 2400);
     this.animationHorns = new AnimationFrame(16, 1600);
 
+    // this.speedX = 0;
     this.speedY = Math.random();
+    this.explotionSize = 3;
   }
   update(timeframe) {
     this.animationBreath.update(timeframe);
@@ -170,6 +173,9 @@ class Enemy3 extends Enemy {
     while (d < 3) {
       const enemy = createEnemy(1, x + d * deltaX, this.y, this.game);
       this.game.enemies.push(enemy);
+
+      const bomb = new Bomb(x + d * deltaX, this.y, this.game);
+      this.game.bombs.push(bomb);
       d++;
     }
   }

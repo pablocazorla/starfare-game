@@ -5,6 +5,7 @@ import Graphics from "../../utils/graphic";
 class Enemy1 extends Enemy {
   constructor(x, y, game) {
     super(x, y, game);
+    this.name = "Enemy1";
     this.animationBreath = new AnimationFrame(8, 1000);
     this.animationEye = new AnimationFrame(6, 2400);
   }

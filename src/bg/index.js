@@ -9,6 +9,7 @@ class Bg {
     this.stars = [];
     this.planets = [];
     this.speedY = 3;
+    this.name = "Bg";
 
     this.starsTimerCommon = new Timer(40);
     this.starsTimerCommon.each(() => {

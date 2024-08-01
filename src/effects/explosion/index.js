@@ -2,21 +2,23 @@ import Particle from "./particle";
 import Sound from "../../sound";
 
 class Explosion {
-  constructor(x, y, game, size, color) {
+  constructor(x, y, game, size = 1, color = 60) {
     this.game = game;
     this.x = x;
     this.y = y;
+    this.name = "Explosion";
     //
     this.radius = 0;
-    this.radiusInitialSpeed = 4;
+    this.radiusInitialSpeed = 4 * size;
     this.radiusSpeed = this.radiusInitialSpeed;
     this.radiusAcceleration = 0.98;
-    this.gravityY = 1;
-    this.color = color || 60;
+    this.gravityY = 1.02;
+    this.color = color;
     //
     this.particles = [];
-    for (let i = 0; i < (size || 100); i++) {
-      this.particles.push(new Particle(this));
+
+    for (let i = 0; i < size * 100; i++) {
+      this.particles.push(new Particle(this, size));
     }
     //
     this.markedToDelete = false;

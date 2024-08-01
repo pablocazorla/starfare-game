@@ -10,6 +10,7 @@ import Overpower from "../upgrades/overpower";
 import Sound from "../sound";
 import Timer from "../utils/timer";
 import { updateCollection, drawCollection } from "../utils/collection";
+import Bomb from "../projectiles/bomb";
 
 class Game {
   constructor(canvasId) {
@@ -17,6 +18,7 @@ class Game {
     this.ctx = this.canvas.getContext("2d");
     this.width = this.canvas.width;
     this.height = this.canvas.height;
+    this.name = "Game";
 
     // INITIAL EVENT LISTENERS
     this.initialEventListeners();
@@ -24,10 +26,11 @@ class Game {
     // OBJECTS
     this.bg = new Bg(this);
     this.ship = new Ship(this);
-    this.projectiles = [];
+    this.bullets = [];
+    this.explosions = [];
+    this.bombs = [];
     this.enemies = [];
     this.enemiesBirthInterval = null;
-    this.explosions = [];
     this.overpowers = [];
     this.overpowersBirthInterval = null;
 
@@ -36,7 +39,7 @@ class Game {
 
     this.enemiesTimer.each(() => {
       const typeNum = Math.random();
-      const type = typeNum < 0.05 ? 3 : typeNum < 0.18 ? 2 : 1;
+      const type = typeNum < 0.05 ? 3 : typeNum < 0.19 ? 2 : 1;
       const enemy = createEnemy(
         type,
         Math.random() * (this.width - 20) + 10,
@@ -90,8 +93,11 @@ class Game {
       this.start();
     }
     //temp
-    /*  const enemy = createEnemy(3, 0.5 * this.width, 0.4 * this.height, this);
+    /* const enemy = createEnemy(3, 0.5 * this.width, 0.3 * this.height, this);
     this.enemies.push(enemy); */
+
+    /* const bomb = new Bomb(0.5 * this.width, 0.3 * this.height, this);
+    this.bombs.push(bomb); */
   }
   update(timeFrame) {
     //
@@ -99,7 +105,8 @@ class Game {
       this.bg.update(timeFrame);
 
       // PROJECTILES
-      updateCollection(this, "projectiles", timeFrame);
+      updateCollection(this, "bullets", timeFrame);
+      updateCollection(this, "bombs", timeFrame);
 
       // ENEMIES
       updateCollection(this, "enemies", timeFrame);
@@ -130,7 +137,8 @@ class Game {
     this.bg.draw();
 
     // PROJECTILES
-    drawCollection(this.projectiles);
+    drawCollection(this.bullets);
+    drawCollection(this.bombs);
 
     // ENEMIES
     drawCollection(this.enemies);
@@ -156,7 +164,7 @@ class Game {
   }
   // START GAME
   start() {
-    this.projectiles = [];
+    this.bullets = [];
     this.explosions = [];
     this.enemies = [];
     this.overpowers = [];
