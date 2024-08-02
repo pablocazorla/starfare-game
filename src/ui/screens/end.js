@@ -27,19 +27,21 @@ class ScreenEnd extends Screen {
 
     ctx.font = "bold 60px Courier New";
 
-    ctx.fillText("Game Over", this.game.width / 2, this.game.height * 0.4);
+    ctx.fillText("Fin del juego", this.game.width / 2, this.game.height * 0.4);
 
     ctx.fillStyle = "#99f";
     ctx.font = "bold 35px Courier New";
     ctx.fillText(
-      `${this.game.score} points`,
+      `${this.game.score} puntos`,
       this.game.width / 2,
       this.game.height * 0.5
     );
 
     ctx.font = "bold 18px Courier New";
     ctx.fillText(
-      `(${this.game.isTouchDevice ? "Tap HERE" : "Press ENTER"} to RESTART)`,
+      `(${
+        this.game.isTouchDevice ? "Pulsa AQUÍ" : "Presiona ENTER"
+      } para REINICIAR)`,
       this.game.width / 2,
       this.game.height * 0.6
     );

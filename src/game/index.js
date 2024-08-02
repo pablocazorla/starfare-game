@@ -59,20 +59,11 @@ class Game {
     });
 
     this.upgradesTimer = new Timer(20000);
+    this.upgradesNewLifesTimer = new Timer(15000);
     this.upgradesTimer.each(() => {
       const typeNum = Math.random();
-      const type =
-        typeNum < 0.08 ? "NewLifes" : typeNum < 0.2 ? "Shield" : "Overpower";
+      const type = typeNum < 0.9 ? "Shield" : "Overpower";
       switch (type) {
-        case "NewLifes":
-          this.upgrades.push(
-            new NewLifes(
-              Math.random() * (this.width - 20) + 10,
-              -0.1 * this.height,
-              this
-            )
-          );
-          break;
         case "Shield":
           this.upgrades.push(
             new Shield(
@@ -93,6 +84,19 @@ class Game {
           break;
         default:
           break;
+      }
+    });
+
+    this.upgradesNewLifesTimer = new Timer(10000);
+    this.upgradesNewLifesTimer.each(() => {
+      if (this.ship.lifes <= 1) {
+        this.upgrades.push(
+          new NewLifes(
+            Math.random() * (this.width - 20) + 10,
+            -0.1 * this.height,
+            this
+          )
+        );
       }
     });
 
@@ -179,6 +183,7 @@ class Game {
       updateCollection(this, "upgrades", timeFrame);
       if (this.started) {
         this.upgradesTimer.update(timeFrame);
+        this.upgradesNewLifesTimer.update(timeFrame);
       }
 
       // EXPLOSIONS

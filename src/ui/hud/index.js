@@ -21,7 +21,7 @@ class Hud {
     ctx.globalAlpha = 0.8;
     ctx.textAlign = "right";
     ctx.textBaseline = "top";
-    ctx.font = "bold 22px Courier New";
+    ctx.font = "bold 30px Courier New";
     this.drawLifes(G);
     this.drawProyectileCharge(ctx);
     this.drawScore(ctx);

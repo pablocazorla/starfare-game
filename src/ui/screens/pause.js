@@ -26,7 +26,9 @@ class ScreenPause extends Screen {
     ctx.fillStyle = "#99f";
     ctx.font = "bold 22px Courier New";
     ctx.fillText(
-      `${this.game.isTouchDevice ? "Tap HERE" : "Press ENTER"} to CONTINUE`,
+      `${
+        this.game.isTouchDevice ? "Pulsa AQUI" : "Presiona ENTER"
+      } para CONTINUAR`,
       this.game.width / 2,
       this.game.height / 2
     );

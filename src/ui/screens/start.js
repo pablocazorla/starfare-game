@@ -42,7 +42,9 @@ class ScreenStart extends Screen {
     ctx.fillStyle = "#99f";
     ctx.font = "bold 22px Courier New";
     ctx.fillText(
-      `${this.game.isTouchDevice ? "Tap HERE" : "Press ENTER"} to START`,
+      `${
+        this.game.isTouchDevice ? "Pulsa AQUÍ" : "Presiona ENTER"
+      } para INICIAR`,
       this.game.width / 2,
       this.game.height / 2
     );

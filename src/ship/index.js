@@ -3,7 +3,6 @@ import Bullet from "../projectiles/bullet";
 import Explosion from "../effects/explosion";
 import Sound from "../sound";
 import Graphics from "../utils/graphic";
-import NewLifes from "../upgrades/newLifes";
 
 const upgradeConfig = {
   Overpower: {
@@ -333,7 +332,7 @@ class Ship extends Body {
               this.lifes = 0;
             }
           } else {
-            this.game.score += item.value;
+            this.game.score += item?.value || 0;
           }
         }
       });
@@ -361,8 +360,8 @@ class Ship extends Body {
           this.projectileCharge = this.maxProjectileCharge;
         }
         if (name === "Shield") {
-          this.upgrades.Overpower.enabled = true;
-          this.upgrades.Overpower.timer = 0;
+          this.upgrades.Shield.enabled = true;
+          this.upgrades.Shield.timer = 0;
           this.width = this.upgrades.Shield.radius;
           this.height = this.upgrades.Shield.radius;
         }
