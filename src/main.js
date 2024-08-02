@@ -1,7 +1,7 @@
 import Game from "./game";
 
 window.addEventListener("load", () => {
-  const game = new Game("starfarer-canvas");
+  const game = new Game("starfarer-canvas", "starfarer-container");
 
   let previousTime = 0;
 

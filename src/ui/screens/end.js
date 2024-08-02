@@ -39,7 +39,7 @@ class ScreenEnd extends Screen {
 
     ctx.font = "bold 18px Courier New";
     ctx.fillText(
-      "(Press ENTER to RESTART)",
+      `(${this.game.isTouchDevice ? "Tap HERE" : "Press ENTER"} to RESTART)`,
       this.game.width / 2,
       this.game.height * 0.6
     );

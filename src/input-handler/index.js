@@ -1,5 +1,5 @@
 class InputHandler {
-  constructor(keyList) {
+  constructor(keyList, buttonList) {
     this.keys = keyList.reduce((obj, key) => {
       obj[key] = false;
       return obj;
@@ -17,6 +17,21 @@ class InputHandler {
       if (this.keys[event.key]) {
         this.keys[event.key] = false;
       }
+    });
+    /**************************/
+
+    buttonList.forEach(({ id, key }) => {
+      const button = document.getElementById(id);
+      button.addEventListener("touchstart", () => {
+        this.keys[key] = true;
+      });
+
+      button.addEventListener("touchend", () => {
+        this.keys[key] = false;
+      });
+      button.addEventListener("touchleave", () => {
+        this.keys[key] = false;
+      });
     });
   }
 }

@@ -13,13 +13,23 @@ import Sound from "../sound";
 import Timer from "../utils/timer";
 import { updateCollection, drawCollection } from "../utils/collection";
 
+const GAME_WIDTH = 700;
+
 class Game {
-  constructor(canvasId) {
+  constructor(canvasId, containerId) {
     this.canvas = document.getElementById(canvasId);
+    this.container = document.getElementById(containerId);
     this.ctx = this.canvas.getContext("2d");
-    this.width = this.canvas.width;
+    this.canvas.width = GAME_WIDTH;
+    this.width = GAME_WIDTH;
     this.height = this.canvas.height;
     this.name = "Game";
+
+    this.isTouchDevice = "ontouchstart" in document.documentElement;
+
+    if (this.isTouchDevice) {
+      document.getElementById("controls").classList.add("visible");
+    }
 
     // INITIAL EVENT LISTENERS
     this.initialEventListeners();
@@ -102,14 +112,37 @@ class Game {
     this.hud = new Hud(this);
 
     // INPUTS
-    this.input = new InputHandler([
-      "ArrowUp",
-      "ArrowDown",
-      "ArrowLeft",
-      "ArrowRight",
-      " ",
-      "Enter",
-    ]);
+    this.input = new InputHandler(
+      ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "Enter"],
+      this.isTouchDevice
+        ? [
+            {
+              id: "shoot-btn",
+              key: " ",
+            },
+            {
+              id: "move-top-btn",
+              key: "ArrowUp",
+            },
+            {
+              id: "move-left-btn",
+              key: "ArrowLeft",
+            },
+            {
+              id: "move-right-btn",
+              key: "ArrowRight",
+            },
+            {
+              id: "move-down-btn",
+              key: "ArrowDown",
+            },
+            {
+              id: "starfarer-container",
+              key: "Enter",
+            },
+          ]
+        : []
+    );
 
     // SOUND
     this.music = new Sound(this, "music");
@@ -226,10 +259,11 @@ class Game {
   }
   initialEventListeners() {
     const resize = () => {
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
-      this.width = window.innerWidth;
-      this.height = window.innerHeight;
+      const rect = this.container.getBoundingClientRect();
+      //   this.canvas.width = rect.width;
+      this.canvas.height = (rect.height * GAME_WIDTH) / rect.width;
+
+      this.height = this.canvas.height;
     };
     window.addEventListener("resize", resize);
     resize();

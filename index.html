@@ -10,8 +10,28 @@
       body {
         margin: 0;
         padding: 0;
+        overflow: hidden;
+        background-color: #111;
+      }
+
+      .app-container {
+        padding: 0;
+        width: 100%;
+        max-width: 700px;
         height: 100dvh;
-        width: 100dvw;
+        margin: 0 auto;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+        background-color: #000;
+        display: flex;
+        flex-direction: column;
+      }
+      .canvas-container {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        flex: 1 0 auto;
+        /* height: calc(100dvh - 140px); */
         overflow: hidden;
         cursor: crosshair;
         background: linear-gradient(
@@ -46,6 +66,8 @@
       }
       canvas {
         display: block;
+        width: 100% !important;
+        height: 100% !important;
       }
       canvas.shake {
         --amplitude: 15px;
@@ -85,10 +107,145 @@
           transform: translate(0, 0);
         }
       }
+
+      .controls {
+        padding: 20px 40px;
+        /*  display: flex; */
+        justify-content: space-between;
+        align-items: center;
+        display: none;
+      }
+      .controls.visible {
+        display: flex;
+      }
+      .control-btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 0;
+        width: 130px;
+        height: 130px;
+        transform: rotate(45deg);
+      }
+      button {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: transparent;
+        color: #fff;
+        cursor: pointer;
+      }
+      button:active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .shoot-btn {
+        width: 90px;
+        height: 90px;
+        border-radius: 30%;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .control-btn-1 {
+        border-top-left-radius: 60%;
+      }
+      .control-btn-1 svg {
+        transform: rotate(45deg);
+      }
+      .control-btn-2 {
+        border-top-right-radius: 60%;
+      }
+      .control-btn-2 svg {
+        transform: rotate(135deg);
+      }
+      .control-btn-3 {
+        border-bottom-left-radius: 60%;
+      }
+      .control-btn-3 svg {
+        transform: rotate(-45deg);
+      }
+      .control-btn-4 {
+        border-bottom-right-radius: 60%;
+      }
+      .control-btn-4 svg {
+        transform: rotate(-135deg);
+      }
     </style>
   </head>
   <body>
-    <canvas id="starfarer-canvas" width="700" height="800"></canvas>
+    <div class="app-container">
+      <div class="canvas-container" id="starfarer-container">
+        <canvas id="starfarer-canvas" width="700" height="800"></canvas>
+      </div>
+      <div class="controls" id="controls">
+        <div class="">
+          <button class="shoot-btn" id="shoot-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m-.6-6.5v3.425q0 .4.375.488t.575-.263l3.025-5.925q.125-.25-.025-.487t-.425-.238H12.75V7.025q0-.4-.375-.5t-.575.25l-3.15 6q-.125.275.013.5t.412.225z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="control-btns">
+          <button class="control-btn-1" id="move-top-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
+              />
+            </svg>
+          </button>
+          <button class="control-btn-2" id="move-right-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
+              />
+            </svg></button
+          ><button class="control-btn-3" id="move-left-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
+              />
+            </svg>
+          </button>
+          <button class="control-btn-4" id="move-down-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <audio src="/sounds/music.mp3" id="music"></audio>
     <audio src="/sounds/laser.mp3" id="laser"></audio>
     <audio src="/sounds/laser2.mp3" id="laser2"></audio>
