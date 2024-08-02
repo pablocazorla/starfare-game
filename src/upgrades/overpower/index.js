@@ -1,32 +1,11 @@
-import Body from "../../body";
+import Upgrade from "../upgrade-class";
 
-class Overpower extends Body {
+class Overpower extends Upgrade {
   constructor(x, y, game) {
     super(x, y, game);
-    this.width = 45;
+    this.name = "Overpower";
+
     this.height = 65;
-    //
-    this.speedX = Math.random() * 2 - 3;
-    this.speedY = Math.random() * 1 + 1;
-  }
-  update() {
-    // Move
-
-    this.x += this.speedX;
-    this.y += this.speedY;
-
-    if (this.x < 0.5 * this.width) {
-      this.speedX *= -1;
-      this.x = 0.5 * this.width;
-    }
-    if (this.x > this.game.width - 0.5 * this.width) {
-      this.speedX *= -1;
-      this.x = this.game.width - 0.5 * this.width;
-    }
-
-    if (this.y > this.game.height + this.height) {
-      this.markedToDelete = true;
-    }
   }
   draw() {
     const { ctx } = this.game;

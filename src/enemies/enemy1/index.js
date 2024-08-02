@@ -63,10 +63,7 @@ class Enemy1 extends Enemy {
       this.x,
       y,
       (this.width + 0.7 * frameBreath) / 2,
-      this.height * 0.6,
-      0,
-      0,
-      Math.PI * 2
+      this.height * 0.6
     )
       // EYE
       .ellipse(

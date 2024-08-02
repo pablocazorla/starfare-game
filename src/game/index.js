@@ -7,10 +7,11 @@ import ScreenStart from "../ui/screens/start";
 import ScreenPause from "../ui/screens/pause";
 import ScreenEnd from "../ui/screens/end";
 import Overpower from "../upgrades/overpower";
+import Shield from "../upgrades/shield";
+import NewLifes from "../upgrades/newLifes";
 import Sound from "../sound";
 import Timer from "../utils/timer";
 import { updateCollection, drawCollection } from "../utils/collection";
-import Bomb from "../projectiles/bomb";
 
 class Game {
   constructor(canvasId) {
@@ -30,9 +31,7 @@ class Game {
     this.explosions = [];
     this.bombs = [];
     this.enemies = [];
-    this.enemiesBirthInterval = null;
-    this.overpowers = [];
-    this.overpowersBirthInterval = null;
+    this.upgrades = [];
 
     // TIMERS
     this.enemiesTimer = new Timer(1500);
@@ -49,15 +48,42 @@ class Game {
       this.enemies.push(enemy);
     });
 
-    this.overpowersTimer = new Timer(20000);
-    this.overpowersTimer.each(() => {
-      this.overpowers.push(
-        new Overpower(
-          Math.random() * (this.width - 20) + 10,
-          -0.1 * this.height,
-          this
-        )
-      );
+    this.upgradesTimer = new Timer(20000);
+    this.upgradesTimer.each(() => {
+      const typeNum = Math.random();
+      const type =
+        typeNum < 0.08 ? "NewLifes" : typeNum < 0.2 ? "Shield" : "Overpower";
+      switch (type) {
+        case "NewLifes":
+          this.upgrades.push(
+            new NewLifes(
+              Math.random() * (this.width - 20) + 10,
+              -0.1 * this.height,
+              this
+            )
+          );
+          break;
+        case "Shield":
+          this.upgrades.push(
+            new Shield(
+              Math.random() * (this.width - 20) + 10,
+              -0.1 * this.height,
+              this
+            )
+          );
+          break;
+        case "Overpower":
+          this.upgrades.push(
+            new Overpower(
+              Math.random() * (this.width - 20) + 10,
+              -0.1 * this.height,
+              this
+            )
+          );
+          break;
+        default:
+          break;
+      }
     });
 
     // STATES
@@ -98,6 +124,8 @@ class Game {
 
     /* const bomb = new Bomb(0.5 * this.width, 0.3 * this.height, this);
     this.bombs.push(bomb); */
+
+    //this.upgrades.push(new NewLifes(0.5 * this.width, 0.3 * this.height, this));
   }
   update(timeFrame) {
     //
@@ -114,10 +142,10 @@ class Game {
         this.enemiesTimer.update(timeFrame);
       }
 
-      // OVERPOWERS
-      updateCollection(this, "overpowers", timeFrame);
+      // UPGRADES
+      updateCollection(this, "upgrades", timeFrame);
       if (this.started) {
-        this.overpowersTimer.update(timeFrame);
+        this.upgradesTimer.update(timeFrame);
       }
 
       // EXPLOSIONS
@@ -143,8 +171,8 @@ class Game {
     // ENEMIES
     drawCollection(this.enemies);
 
-    // OVERPOWERS
-    drawCollection(this.overpowers);
+    // UPGRADES
+    drawCollection(this.upgrades);
 
     // SHIP
     this.ship.draw();
@@ -167,7 +195,7 @@ class Game {
     this.bullets = [];
     this.explosions = [];
     this.enemies = [];
-    this.overpowers = [];
+    this.upgrades = [];
     this.ship.reset();
     //
 
