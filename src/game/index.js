@@ -62,7 +62,7 @@ class Game {
     this.upgradesNewLifesTimer = new Timer(15000);
     this.upgradesTimer.each(() => {
       const typeNum = Math.random();
-      const type = typeNum < 0.9 ? "Shield" : "Overpower";
+      const type = typeNum < 0.2 ? "Shield" : "Overpower";
       switch (type) {
         case "Shield":
           this.upgrades.push(
