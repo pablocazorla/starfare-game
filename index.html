@@ -127,14 +127,13 @@
         height: 130px;
         transform: rotate(45deg);
       }
-      button {
+      .btn {
         border: 1px solid rgba(255, 255, 255, 0.2);
         background-color: transparent;
         color: #fff;
         cursor: pointer;
-      }
-      button:active {
-        background-color: rgba(255, 255, 255, 0.2);
+        display: grid;
+        place-items: center;
       }
 
       .shoot-btn {
@@ -142,30 +141,47 @@
         height: 90px;
         border-radius: 30%;
         color: rgba(255, 255, 255, 0.5);
+        background: #000;
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
       .control-btn-1 {
-        border-top-left-radius: 60%;
+        border-top-left-radius: 100%;
       }
       .control-btn-1 svg {
         transform: rotate(45deg);
       }
       .control-btn-2 {
-        border-top-right-radius: 60%;
+        border-top-right-radius: 100%;
       }
       .control-btn-2 svg {
         transform: rotate(135deg);
       }
       .control-btn-3 {
-        border-bottom-left-radius: 60%;
+        border-bottom-left-radius: 100%;
       }
       .control-btn-3 svg {
         transform: rotate(-45deg);
       }
       .control-btn-4 {
-        border-bottom-right-radius: 60%;
+        border-bottom-right-radius: 100%;
       }
       .control-btn-4 svg {
         transform: rotate(-135deg);
+      }
+
+      #control-btns {
+        position: relative;
+      }
+      .control-btns-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #000;
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
     </style>
   </head>
@@ -190,58 +206,62 @@
             </svg>
           </button>
         </div>
-        <div class="control-btns">
-          <button class="control-btn-1" id="move-top-btn">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
-              />
-            </svg>
-          </button>
-          <button class="control-btn-2" id="move-right-btn">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
-              />
-            </svg></button
-          ><button class="control-btn-3" id="move-left-btn">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
-              />
-            </svg>
-          </button>
-          <button class="control-btn-4" id="move-down-btn">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
-              />
-            </svg>
-          </button>
+        <div id="control-btns">
+          <div class="control-btns">
+            <div class="btn control-btn-1" id="move-top-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
+                />
+              </svg>
+            </div>
+            <div class="btn control-btn-2" id="move-right-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
+                />
+              </svg>
+            </div>
+            <div class="btn control-btn-3" id="move-left-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
+                />
+              </svg>
+            </div>
+            <div class="btn control-btn-4" id="move-down-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="control-btns-center"></div>
         </div>
       </div>
     </div>

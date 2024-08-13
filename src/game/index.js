@@ -118,34 +118,7 @@ class Game {
     // INPUTS
     this.input = new InputHandler(
       ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "Enter"],
-      this.isTouchDevice
-        ? [
-            {
-              id: "shoot-btn",
-              key: " ",
-            },
-            {
-              id: "move-top-btn",
-              key: "ArrowUp",
-            },
-            {
-              id: "move-left-btn",
-              key: "ArrowLeft",
-            },
-            {
-              id: "move-right-btn",
-              key: "ArrowRight",
-            },
-            {
-              id: "move-down-btn",
-              key: "ArrowDown",
-            },
-            {
-              id: "starfarer-container",
-              key: "Enter",
-            },
-          ]
-        : []
+      this.isTouchDevice ? "control-btns" : null
     );
 
     // SOUND
