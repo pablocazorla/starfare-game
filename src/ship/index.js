@@ -43,7 +43,7 @@ class Ship extends Body {
     this.speedY = 0;
     this.currentSpeedX = 0;
     this.currentSpeedY = 0;
-    this.maxSpeed = 6;
+    this.maxSpeed = this.game.isTouchDevice ? 3 : 6;
     this.acceleration = 0.1;
     //
     this.inclination = 0;
