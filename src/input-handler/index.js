@@ -20,7 +20,7 @@ class InputHandler {
     });
     /**************************/
     if (controlBtnsId) {
-      const padding = 7;
+      const padding = 3;
       let touching = false;
       const button = document.getElementById(controlBtnsId);
 
