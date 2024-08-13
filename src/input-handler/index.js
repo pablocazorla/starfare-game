@@ -94,6 +94,14 @@ class InputHandler {
       shootBtn.addEventListener("touchend", () => {
         this.keys[" "] = false;
       });
+      //
+      const mobileStart = document.getElementById("mobile-start");
+
+      mobileStart.classList.add("visible");
+
+      mobileStart.addEventListener("touchend", () => {
+        mobileStart.classList.remove("visible");
+      });
     }
   }
 }
