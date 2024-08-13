@@ -95,11 +95,19 @@ class InputHandler {
         this.keys[" "] = false;
       });
       //
+      function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
       const mobileStart = document.getElementById("mobile-start");
 
       mobileStart.classList.add("visible");
 
       mobileStart.addEventListener("touchend", () => {
+        toggleFullScreen();
         mobileStart.classList.remove("visible");
       });
     }
