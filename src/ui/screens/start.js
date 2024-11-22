@@ -49,7 +49,7 @@ class ScreenStart extends Screen {
       this.game.height / 2
     );
     if (!this.game.isTouchDevice) {
-      ctx.fillStyle = "#0007";
+      ctx.fillStyle = "#0003";
       ctx.font = "bold 18px Courier New";
       const w = 0.45;
       ctx.fillRect(
