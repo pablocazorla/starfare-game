@@ -48,6 +48,44 @@ class ScreenStart extends Screen {
       this.game.width / 2,
       this.game.height / 2
     );
+    if (!this.game.isTouchDevice) {
+      ctx.fillStyle = "#0007";
+      ctx.font = "bold 18px Courier New";
+      const w = 0.45;
+      ctx.fillRect(
+        ((1 - w) * this.game.width) / 2,
+        this.game.height * 0.565,
+        w * this.game.width,
+        this.game.height * 0.24
+      );
+      ctx.fillStyle = "#aaa";
+      ctx.fillText(
+        `Usa las teclas de FLECHA`,
+        this.game.width / 2,
+        this.game.height * 0.6
+      );
+      ctx.fillText(
+        `para MOVER la nave.`,
+        this.game.width / 2,
+        this.game.height * 0.63
+      );
+      ctx.fillText(
+        `Usa la BARRA ESPACIADORA`,
+        this.game.width / 2,
+        this.game.height * 0.68
+      );
+      ctx.fillText(
+        `para DISPARAR.`,
+        this.game.width / 2,
+        this.game.height * 0.71
+      );
+      ctx.fillText(
+        `ENTER para PAUSAR.`,
+        this.game.width / 2,
+        this.game.height * 0.77
+      );
+    }
+
     ctx.restore();
   }
 }
