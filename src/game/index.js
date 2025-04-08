@@ -11,9 +11,8 @@ import Shield from "../upgrades/shield";
 import NewLifes from "../upgrades/newLifes";
 import Sound from "../sound";
 import Timer from "../utils/timer";
+import { GAME_WIDTH } from "../constants";
 import { updateCollection, drawCollection } from "../utils/collection";
-
-const GAME_WIDTH = 700;
 
 class Game {
   constructor(canvasId, containerId) {
